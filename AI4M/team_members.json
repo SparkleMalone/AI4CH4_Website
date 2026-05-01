@@ -1,0 +1,278 @@
+[
+  {
+    "name": "Alison Hoyt",
+    "position": "Assistant Professor",
+    "affiliation": "Stanford University",
+    "email": "ahoyt@stanford.edu"
+  },
+  {
+    "name": "Ammara Talib",
+    "position": "Postdoc",
+    "affiliation": "Yale University",
+    "email": "ammara.talib@yale.edu"
+  },
+  {
+    "name": "Avni Malhotra",
+    "position": "Scientist",
+    "affiliation": "Pacific Northwest National Laboratory",
+    "email": "avni.malhotra@pnnl.gov"
+  },
+  {
+    "name": "Ben Gaubert",
+    "position": "Project Scientist",
+    "affiliation": "National Center for Atmospheric Research",
+    "email": "gaubert@ucar.edu"
+  },
+  {
+    "name": "Ben Riddell-Young",
+    "position": "Postdoc",
+    "affiliation": "NOAA Global Monitoring Laboratory",
+    "email": "benjamin riddell-young - NOAA Affiliate"
+  },
+  {
+    "name": "Bradley A. Gay",
+    "position": "Researcher",
+    "affiliation": "NASA Goddard",
+    "email": "bgay2@gmu.edu"
+  },
+  {
+    "name": "Colin Quinn",
+    "position": "Assistant Research Scientist",
+    "affiliation": "NASA Goddard",
+    "email": "cquinn8@umd.edu"
+  },
+  {
+    "name": "Danielle Potocek",
+    "position": "Scientist",
+    "affiliation": "Spark Climate Solutions",
+    "email": "danielle@sparkclimate.org"
+  },
+  {
+    "name": "Eric Ward",
+    "position": "Associate research scientist",
+    "affiliation": "University of Maryland, College Park",
+    "email": "ericward@umd.edu"
+  },
+  {
+    "name": "Etienne Fluet-Chouinard",
+    "position": "Research Scientist",
+    "affiliation": "Pacific Northwest National Laboratory",
+    "email": "etienne.fluet@pnnl.gov"
+  },
+  {
+    "name": "Fa Li",
+    "position": "Assisstant Professor",
+    "affiliation": "UT - Austin",
+    "email": "fali2@stanford.edu"
+  },
+  {
+    "name": "Fenghui Yuan",
+    "position": "Researcher",
+    "affiliation": "University of Minnesota",
+    "email": "fyuan@umn.edu"
+  },
+  {
+    "name": "Gavin McNicol",
+    "position": "Assistant Professor",
+    "affiliation": "University of Illinois Chicago",
+    "email": "gmcnicol@uic.edu"
+  },
+  {
+    "name": "Housen Chu",
+    "position": "Research Scientist",
+    "affiliation": "Lawrence Berkeley National Lab",
+    "email": "HChu@lbl.gov"
+  },
+  {
+    "name": "Jenna Abrahamson",
+    "position": "Postdoctoral Reserach Associate",
+    "affiliation": "Pacific Northwets National Laboratory",
+    "email": "jenna.abrahamson@pnnl.gov"
+  },
+  {
+    "name": "Jennifer Watts",
+    "position": "Science lead",
+    "affiliation": "Woodwell Climate Research Center",
+    "email": "jwatts@woodwellclimate.org"
+  },
+  {
+    "name": "Jianqiu Zheng",
+    "position": "Earth Scientist",
+    "affiliation": "Pacific Northwest National Laboratory",
+    "email": "jianqiu.zheng@pnnl.gov"
+  },
+  {
+    "name": "Kayla Borton",
+    "position": "Research Scientist",
+    "affiliation": "Colorado State University",
+    "email": "mikayla.borton@colostate.edu"
+  },
+  {
+    "name": "Kelly Wrighton",
+    "position": "Professor",
+    "affiliation": "Colorado State University",
+    "email": "kelly.wrighton@colostate.edu"
+  },
+  {
+    "name": "Kendalynn Morris",
+    "position": "Earth Scientist",
+    "affiliation": "Joint Global Change Research Institute, Pacific Northwest National Lab",
+    "email": "kendalynn.morris@pnnl.gov"
+  },
+  {
+    "name": "Kevin Rozmiarek",
+    "position": "Graduate Student",
+    "affiliation": "University of Colorado",
+    "email": "kevin.rozmiarek@colorado.edu"
+  },
+  {
+    "name": "Kunxiaojia Yuan",
+    "position": "Assistant Professor",
+    "affiliation": "University of Houston",
+    "email": "kunxiaojiayuan@lbl.gov"
+  },
+  {
+    "name": "Kyle Arndt",
+    "position": "Research Scientist",
+    "affiliation": "Woodwell Climate Research Center",
+    "email": "karndt@woodwellclimate.org"
+  },
+  {
+    "name": "Licheng Liu",
+    "position": "Research Scientist",
+    "affiliation": "University of Minnesota",
+    "email": "lichengl@umn.edu"
+  },
+  {
+    "name": "Lori Bruhwiler",
+    "position": "Physical Scientist",
+    "affiliation": "NOAA Global Monitoring Laboratory",
+    "email": "lori.bruhwiler@noaa.gov"
+  },
+  {
+    "name": "Madeline Scyphers",
+    "position": "Postdoc",
+    "affiliation": "Colorado State University",
+    "email": "madeline.scyphers@colostate.edu"
+  },
+  {
+    "name": "Michael Yonker",
+    "position": "Ph.D. Student",
+    "affiliation": "University of Illinois Chicago",
+    "email": "myonke2@uic.edu"
+  },
+  {
+    "name": "Minkyu Moon",
+    "position": "Assistant Professor",
+    "affiliation": "Kangwon National University",
+    "email": "moon.minkyu@kangwon.ac.kr"
+  },
+  {
+    "name": "Nicole Cai",
+    "position": "Postdoc",
+    "affiliation": "Yale University",
+    "email": "xun.cai@yale.edu"
+  },
+  {
+    "name": "Qianlai Zhuang",
+    "position": "Professor",
+    "affiliation": "Purdue University",
+    "email": "qzhuang@purdue.edu"
+  },
+  {
+    "name": "Qing Ying",
+    "position": "Post-doc",
+    "affiliation": "University of Maryland, College Park",
+    "email": "qying@umd.edu"
+  },
+  {
+    "name": "Qing Zhu",
+    "position": "Staff Scientist",
+    "affiliation": "Lawrence Berkeley National Lab",
+    "email": "qzhu@lbl.gov"
+  },
+  {
+    "name": "RongChao Dong",
+    "position": "Ph.D. student",
+    "affiliation": "University of Pittsburg",
+    "email": "rongchaodong@pitt.edu"
+  },
+  {
+    "name": "Sara Knox",
+    "position": "Assistant Professor",
+    "affiliation": "McGill University",
+    "email": "sara.knox@mcgill.ca"
+  },
+  {
+    "name": "Shuo Chen",
+    "position": "Ph.D. student",
+    "affiliation": "Purdue University",
+    "email": "chen4371@purdue.edu"
+  },
+  {
+    "name": "Sparkle Malone",
+    "position": "Assistant Professor",
+    "affiliation": "Yale University",
+    "email": "sparkle.malone@yale.edu"
+  },
+  {
+    "name": "Stefan Metzger",
+    "position": "Founder and Surface-Atmosphere Steward",
+    "affiliation": "AtmoFacts",
+    "email": "smetzger@atmofacts.com"
+  },
+  {
+    "name": "Wang Shaoyu",
+    "position": "postdoc",
+    "affiliation": "Seoul National University",
+    "email": "wsy1995@snu.ac.kr"
+  },
+  {
+    "name": "Xiaowei Jia",
+    "position": "Professor",
+    "affiliation": "University of Pittsburg",
+    "email": "xiaowei@pitt.edu"
+  },
+  {
+    "name": "Xueying Yu",
+    "position": "Assistant Professor",
+    "affiliation": "University at Albany",
+    "email": "Xyu2@albany.edu"
+  },
+  {
+    "name": "Yi Yang",
+    "position": "Research Scientist",
+    "affiliation": "Colorado State University",
+    "email": "yi.yang@colostate.edu"
+  },
+  {
+    "name": "Yiming Sun",
+    "position": "Ph.D. student",
+    "affiliation": "University of Pittsburg",
+    "email": "yimingsun@pitt.edu"
+  },
+  {
+    "name": "Youmi Oh",
+    "position": "Research Scientist",
+    "affiliation": "CIRES, CU Boulder and NOAA Global Monitoring Laboratory",
+    "email": "youmi.oh@noaa.gov"
+  },
+  {
+    "name": "Yujie Liu",
+    "position": "Postdoc",
+    "affiliation": "Northern Arizona University",
+    "email": "yujie.liu@nau.edu"
+  },
+  {
+    "name": "Zhen Zhang",
+    "position": "Professor",
+    "affiliation": "Institute of Tibetan Plateau Research, Chinese Academy of Sciences, Beijing",
+    "email": "yuisheng@gmail.com"
+  },
+  {
+    "name": "Zichong Chen",
+    "position": "Research Associate",
+    "affiliation": "Harvard University",
+    "email": "zchen1@g.harvard.edu"
+  }
+]

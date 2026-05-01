@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team members — AI⁴Methane</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .team-table-wrap { overflow-x: auto; margin-top: 1rem; }
+    .team-table { width: 100%; border-collapse: collapse; }
+    .team-table th, .team-table td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+    .team-table th { color: var(--text-muted); font-weight: 500; font-size: 0.875rem; }
+    .team-table td { color: var(--text); }
+    .team-table a { color: var(--accent); text-decoration: none; }
+    .team-table a:hover { text-decoration: underline; }
+    .team-table tbody tr:hover { background: rgba(45, 212, 191, 0.06); }
+    .page-back { display: inline-block; margin-bottom: 1.5rem; color: var(--accent); text-decoration: none; font-size: 0.9375rem; }
+    .page-back:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="index.html" class="logo">AI<sup>4</sup>Methane</a>
+      <nav>
+        <a href="index.html#about">About</a>
+        <a href="index.html#team">Team</a>
+        <a href="index.html#sectors">Sectors</a>
+        <a href="index.html#workshops">Workshops</a>
+        <a href="index.html#outputs">Outputs</a>
+        <a href="https://cu-esiil.github.io/AI-for-Natural-Methane/" target="_blank" rel="noopener" class="nav-cta">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="wrap">
+        <a href="index.html#team" class="page-back">← Back to AI⁴Methane</a>
+        <h1 class="section-title">Team members</h1>
+        <p class="section-lead">Working group members and affiliations. Data from WG Member Contact 2025 web.</p>
+        <div class="team-table-wrap">
+          <table class="team-table" id="team-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Affiliation</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody id="team-tbody">
+              <tr><td colspan="3" class="section-lead">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>AI<sup>4</sup>Methane — a Collaborative Organization. <a href="https://cu-esiil.github.io/AI-for-Natural-Methane/" target="_blank" rel="noopener">Resources on GitHub</a></p>
+    </div>
+  </footer>
+
+  <script>
+    fetch('team_members.json', { cache: 'no-store' })
+      .then(function(r) { return r.json(); })
+      .then(function(members) {
+        members.sort(function(a, b) {
+          var lastA = (a.name || '').trim().split(/\s+/).pop() || '';
+          var lastB = (b.name || '').trim().split(/\s+/).pop() || '';
+          return lastA.localeCompare(lastB, 'en', { sensitivity: 'base' });
+        });
+        var tbody = document.getElementById('team-tbody');
+        tbody.innerHTML = '';
+        members.forEach(function(m) {
+          var tr = document.createElement('tr');
+          var emailCell = m.email
+            ? '<a href="mailto:' + escapeHtml(m.email) + '">' + escapeHtml(m.email) + '</a>'
+            : '';
+          tr.innerHTML =
+            '<td>' + escapeHtml(m.name) + '</td>' +
+            '<td>' + escapeHtml(m.affiliation) + '</td>' +
+            '<td>' + emailCell + '</td>';
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(function() {
+        document.getElementById('team-tbody').innerHTML =
+          '<tr><td colspan="3" class="section-lead">Could not load team data. Ensure team_members.json is present and the page is served over HTTP.</td></tr>';
+      });
+    function escapeHtml(s) {
+      if (!s) return '';
+      var div = document.createElement('div');
+      div.textContent = s;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>
