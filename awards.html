@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Awards — AI⁴Methane</title>
+  <meta name="description" content="AI⁴Methane awards recognizing members who advance methane science: the Impact Award and the Futures Award." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="expertise.css" />
+  <style>
+    .award-year {
+      display: flex; align-items: baseline; gap: 1rem;
+      font-family: var(--font-serif); font-weight: 600; font-size: 1.6rem; color: var(--text);
+      margin: 2.5rem 0 1.25rem;
+    }
+    .award-year::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+    .award-types { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 1.25rem; margin: 0 0 1rem; }
+    .award-type { border: 1px solid var(--border); border-radius: var(--radius); padding: 1.35rem 1.5rem; background: var(--bg-elevated); }
+    .award-type h3 { font-family: var(--font-serif); font-weight: 600; font-size: 1.4rem; margin: 0 0 0.5rem; color: var(--accent); }
+    .award-type p { margin: 0; color: var(--text-muted); font-size: 0.9375rem; line-height: 1.6; }
+    .awards-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1.5rem; }
+    .award {
+      display: grid; grid-template-columns: 13rem 1fr; gap: 2rem; align-items: center;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.75rem; transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .award:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
+    .award-photo {
+      width: 13rem; height: 13rem; border-radius: 50%; object-fit: cover; display: block;
+      border: 2px solid var(--border); background: var(--bg-elevated);
+    }
+    .award-name-label {
+      display: inline-block; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em;
+      color: var(--accent); margin: 0 0 0.5rem;
+    }
+    .award h2 { font-family: var(--font-serif); font-weight: 600; font-size: clamp(1.6rem, 3.5vw, 2rem); line-height: 1.15; margin: 0 0 0.25rem; }
+    .award-role { color: var(--text-muted); font-size: 0.9375rem; margin: 0 0 1rem; }
+    .award-citation { color: var(--text); margin: 0; max-width: 40em; line-height: 1.6; }
+    .award-links { margin: 1rem 0 0; font-size: 0.9375rem; }
+    .award-links a { color: var(--accent); text-decoration: none; }
+    .award-links a:hover { text-decoration: underline; }
+    @media (max-width: 640px) {
+      .award { grid-template-columns: 1fr; gap: 1.25rem; padding: 1.5rem; text-align: center; justify-items: center; }
+      .award-photo { width: 10rem; height: 10rem; }
+      .award-citation { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="index.html" class="logo">AI<sup>4</sup>Methane</a>
+      <nav>
+        <a href="index.html#about">About</a>
+        <a href="index.html#team">Team</a>
+        <a href="expertise.html">Expertise</a>
+        <a href="index.html#workshops">Workshops</a>
+        <a href="awards.html" aria-current="page" style="color:var(--text)">Awards</a>
+        <a href="index.html#outputs">Outputs</a>
+        <a href="https://cu-esiil.github.io/AI-for-Natural-Methane/" target="_blank" rel="noopener" class="nav-cta">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-main">
+    <section class="section" style="padding-top:1rem">
+      <div class="wrap" style="max-width:60rem">
+        <a href="index.html" class="page-back">← Back to AI⁴Methane</a>
+        <h1 class="section-title" style="margin-bottom:0.5rem">Awards</h1>
+        <p class="section-lead">Recognizing AI⁴Methane members whose work moves the network and the global methane budget forward.</p>
+
+        <div class="award-types">
+          <section class="award-type" aria-labelledby="about-impact">
+            <h3 id="about-impact">Impact Award</h3>
+            <p>Recognizes a member whose work has substantially advanced the network's mission of better constraining global methane sources and sinks, through scientific advances, new methods or data products, or leadership that brings the community together and strengthens collaboration across AI⁴Methane.</p>
+          </section>
+          <section class="award-type" aria-labelledby="about-futures">
+            <h3 id="about-futures">Futures Award</h3>
+            <p>Recognizes a graduate student or early-career researcher whose leadership and contributions show exceptional promise for the future of methane science, such as leading collaborative analyses, synthesis papers, or tools that move the network's work forward.</p>
+          </section>
+        </div>
+
+        <!-- To add an award: copy one <li class="award"> block, put the photo in images/awards/
+             (square, about 640×640 px), and add a new year heading above the list if needed. -->
+        <h2 class="award-year" id="y2026">2026</h2>
+        <ul class="awards-list">
+          <li class="award" id="impact-2026-mcnicol">
+            <img class="award-photo" src="images/awards/gavin-mcnicol-2026.jpg" alt="Portrait of Gavin McNicol" width="640" height="640" loading="lazy" />
+            <div>
+              <p class="award-name-label">Impact Award</p>
+              <h2>Gavin McNicol</h2>
+              <p class="award-role">Assistant Professor · University of Illinois Chicago</p>
+              <p class="award-citation">For advancing methane upscaling, and for organizing the AI⁴Methane scaling/phenology workshop at Yale, funded by the Yale Center for Natural Carbon Capture.</p>
+              <p class="award-links"><a href="https://mcnicol-lab.github.io/ecophilab/" target="_blank" rel="noopener">McNicol Lab website ↗</a></p>
+            </div>
+          </li>
+          <li class="award" id="futures-2026-chen">
+            <img class="award-photo" src="images/awards/shuo-chen-2026.jpg" alt="Portrait of Shuo Chen" width="640" height="640" loading="lazy" />
+            <div>
+              <p class="award-name-label">Futures Award</p>
+              <h2>Shuo Chen</h2>
+              <p class="award-role">Ph.D. Student · Purdue University</p>
+              <p class="award-citation">For leading the first AI⁴Methane synthesis manuscript.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>AI<sup>4</sup>Methane — a Collaborative Organization. <a href="https://cu-esiil.github.io/AI-for-Natural-Methane/" target="_blank" rel="noopener">Resources on GitHub</a></p>
+    </div>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>

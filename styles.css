@@ -524,7 +524,7 @@ body {
 /* Past / Upcoming Workshops */
 .workshops-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   gap: 1.5rem;
   margin-bottom: 1.5rem;
 }
@@ -604,6 +604,12 @@ body {
   line-height: 1.55;
   margin: 0;
 }
+
+.workshop-more { color: var(--accent); text-decoration: none; font-weight: 500; }
+.workshop-more:hover { text-decoration: underline; }
+a.workshop-image-link { overflow: hidden; }
+a.workshop-image-link .workshop-image { transition: transform 0.4s ease; }
+a.workshop-image-link:hover .workshop-image { transform: scale(1.03); }
 
 .workshops-cta {
   margin: 0;

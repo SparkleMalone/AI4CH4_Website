@@ -24,7 +24,7 @@ COLLEGE_PARK = (38.9869, -76.9426, "College Park, MD, USA")
 
 # affiliation (exactly as written in the spreadsheet) -> (lat, lon, place label)
 KNOWN = {
-    "AtmoFacts": (40.71, -74.01, "New York, NY, USA"),
+    "AtmoFacts": (40.1672, -105.1019, "Longmont, CO, USA"),
     "CIRES, CU Boulder and NOAA Global Monitoring Laboratory": BOULDER_NOAA,
     "Colorado State University": (40.5734, -105.0865, "Fort Collins, CO, USA"),
     "Harvard University": (42.3770, -71.1167, "Cambridge, MA, USA"),
@@ -54,6 +54,7 @@ KNOWN = {
     "University of Minnesota": (44.9740, -93.2277, "Minneapolis, MN, USA"),
     "University of Pittsburgh": (40.4444, -79.9608, "Pittsburgh, PA, USA"),
     "University of Texas at Austin": (30.2849, -97.7341, "Austin, TX, USA"),
+    "University of Wisconsin–Madison": (43.0766, -89.4125, "Madison, WI, USA"),
     "Woodwell Climate Research Center": (41.5490, -70.6440, "Falmouth, MA, USA"),
     "Yale University": (41.3163, -72.9223, "New Haven, CT, USA"),
 }

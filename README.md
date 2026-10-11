@@ -26,7 +26,8 @@ Then visit `http://localhost:8080` (or the port shown).
 - `expertise-backend/Code.gs` — Google Apps Script that stores survey responses in a Google Sheet; see `SETUP-expertise.md`
 - `styles.css` — Dark theme, Cormorant Garamond + Outfit, teal accents
 - `script.js` — Header scroll state and scroll-in reveal animations
-- `images/team/`, `images/workshops/` — Portraits and workshop photos
+- `awards.html` — Awards page (Impact Award, Futures Award); add winners by copying an award block
+- `images/team/`, `images/workshops/`, `images/awards/` — Portraits, workshop photos, award-winner photos
 
 ## Updating team data
 
