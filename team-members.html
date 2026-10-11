@@ -29,6 +29,7 @@
       <nav>
         <a href="index.html#about">About</a>
         <a href="index.html#team">Team</a>
+        <a href="expertise.html">Expertise</a>
         <a href="index.html#sectors">Sectors</a>
         <a href="index.html#workshops">Workshops</a>
         <a href="index.html#outputs">Outputs</a>
@@ -49,11 +50,10 @@
               <tr>
                 <th>Name</th>
                 <th>Affiliation</th>
-                <th>Email</th>
               </tr>
             </thead>
             <tbody id="team-tbody">
-              <tr><td colspan="3" class="section-lead">Loading…</td></tr>
+              <tr><td colspan="2" class="section-lead">Loading…</td></tr>
             </tbody>
           </table>
         </div>
@@ -80,19 +80,15 @@
         tbody.innerHTML = '';
         members.forEach(function(m) {
           var tr = document.createElement('tr');
-          var emailCell = m.email
-            ? '<a href="mailto:' + escapeHtml(m.email) + '">' + escapeHtml(m.email) + '</a>'
-            : '';
           tr.innerHTML =
             '<td>' + escapeHtml(m.name) + '</td>' +
-            '<td>' + escapeHtml(m.affiliation) + '</td>' +
-            '<td>' + emailCell + '</td>';
+            '<td>' + escapeHtml(m.affiliation) + '</td>';
           tbody.appendChild(tr);
         });
       })
       .catch(function() {
         document.getElementById('team-tbody').innerHTML =
-          '<tr><td colspan="3" class="section-lead">Could not load team data. Ensure team_members.json is present and the page is served over HTTP.</td></tr>';
+          '<tr><td colspan="2" class="section-lead">Could not load team data. Ensure team_members.json is present and the page is served over HTTP.</td></tr>';
       });
     function escapeHtml(s) {
       if (!s) return '';

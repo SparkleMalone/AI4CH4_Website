@@ -1,8 +1,8 @@
 [
   {
-    "lat": 40.5706567,
-    "lon": -105.0853995,
-    "place": "Colorado State University, Niswender Road, Meadow Lark Heights, Fort Collins, Larimer County, Colorado, 80523, United States",
+    "lat": 40.5734,
+    "lon": -105.0865,
+    "place": "Fort Collins, CO, USA",
     "institutions": [
       {
         "name": "Colorado State University",
@@ -12,45 +12,53 @@
     "count": 4
   },
   {
-    "lat": 38.8851152,
-    "lon": -77.024906,
-    "place": "PNNL - Washington, DC Office, 901, D Street Southwest, Southwest Employment Area, Ward 6, Washington, District of Columbia, 20024, United States",
+    "lat": 46.3456,
+    "lon": -119.2789,
+    "place": "Richland, WA, USA",
     "institutions": [
       {
         "name": "Pacific Northwest National Laboratory",
-        "count": 3
+        "count": 4
       }
     ],
-    "count": 3
+    "count": 4
   },
   {
-    "lat": 40.015,
-    "lon": -105.27,
+    "lat": 39.9956,
+    "lon": -105.262,
     "place": "Boulder, CO, USA",
     "institutions": [
       {
+        "name": "CIRES, CU Boulder and NOAA Global Monitoring Laboratory",
+        "count": 1
+      },
+      {
         "name": "NOAA Global Monitoring Laboratory",
-        "count": 3
+        "count": 2
       }
     ],
     "count": 3
   },
   {
-    "lat": 40.444153,
-    "lon": -79.962461,
-    "place": "University of Pittsburgh, 4200, Fifth Avenue, Chinatown, Downtown, Pittsburgh, Allegheny County, Pennsylvania, 15260, United States",
+    "lat": 38.9869,
+    "lon": -76.9426,
+    "place": "College Park, MD, USA",
     "institutions": [
       {
-        "name": "University of Pittsburg",
-        "count": 3
+        "name": "Joint Global Change Research Institute, Pacific Northwest National Lab",
+        "count": 1
+      },
+      {
+        "name": "University of Maryland, College Park",
+        "count": 2
       }
     ],
     "count": 3
   },
   {
-    "lat": 41.2571306,
-    "lon": -72.9896696,
-    "place": "Yale University, West Haven, South Central Connecticut Planning Region, Connecticut, 06516, United States",
+    "lat": 41.3163,
+    "lon": -72.9223,
+    "place": "New Haven, CT, USA",
     "institutions": [
       {
         "name": "Yale University",
@@ -60,69 +68,33 @@
     "count": 3
   },
   {
-    "lat": 37.8084492,
-    "lon": -122.267501,
-    "place": "Oakland Scientific Facility - Lawrence Berkeley National Lab, Thomas L. Berkley Way, Uptown, Downtown Oakland, Oakland, Alameda County, California, 94612, United States",
+    "lat": 40.4444,
+    "lon": -79.9608,
+    "place": "Pittsburgh, PA, USA",
     "institutions": [
       {
-        "name": "Lawrence Berkeley National Lab",
+        "name": "University of Pittsburgh",
+        "count": 3
+      }
+    ],
+    "count": 3
+  },
+  {
+    "lat": 37.8762,
+    "lon": -122.2467,
+    "place": "Berkeley, CA, USA",
+    "institutions": [
+      {
+        "name": "Lawrence Berkeley National Laboratory",
         "count": 2
       }
     ],
     "count": 2
   },
   {
-    "lat": 38.9784587,
-    "lon": -76.9282678,
-    "place": "College Park–University of Maryland, 4931, Calvert Road, Old Town, College Park, Prince George's County, Maryland, 20740, United States",
-    "institutions": [
-      {
-        "name": "University of Maryland, College Park",
-        "count": 2
-      }
-    ],
-    "count": 2
-  },
-  {
-    "lat": 38.9998313,
-    "lon": -76.8458613,
-    "place": "Goddard Space Flight Center, 8800, Greenbelt Road, Greenbelt, Prince George's County, Maryland, 20771, United States",
-    "institutions": [
-      {
-        "name": "NASA Goddard",
-        "count": 2
-      }
-    ],
-    "count": 2
-  },
-  {
-    "lat": 40.430028,
-    "lon": -86.9264211,
-    "place": "Purdue University, 610, West Lafayette, Tippecanoe County, Indiana, 47907, United States",
-    "institutions": [
-      {
-        "name": "Purdue University",
-        "count": 2
-      }
-    ],
-    "count": 2
-  },
-  {
-    "lat": 41.5494758,
-    "lon": -70.6434741,
-    "place": "Woodwell Climate Research Center, 149, Woods Hole Road, Quissett, Falmouth, Barnstable County, Massachusetts, 02541, United States",
-    "institutions": [
-      {
-        "name": "Woodwell Climate Research Center",
-        "count": 2
-      }
-    ],
-    "count": 2
-  },
-  {
-    "lat": 41.8689223,
-    "lon": -87.6485848,
-    "place": "University of Illinois Chicago, 1200, West Harrison Street, Greektown, Near West Side, Chicago, West Chicago Township, Cook County, Illinois, 60607, United States",
+    "lat": 41.8708,
+    "lon": -87.6505,
+    "place": "Chicago, IL, USA",
     "institutions": [
       {
         "name": "University of Illinois Chicago",
@@ -132,9 +104,33 @@
     "count": 2
   },
   {
-    "lat": 44.9863418,
-    "lon": -93.1794451,
-    "place": "University of Minnesota, Twin Cities Campus, Southeast 8th Avenue, Marcy-Holmes, Falcon Heights, Hennepin County, Minnesota, 55455, United States",
+    "lat": 41.549,
+    "lon": -70.644,
+    "place": "Falmouth, MA, USA",
+    "institutions": [
+      {
+        "name": "Woodwell Climate Research Center",
+        "count": 2
+      }
+    ],
+    "count": 2
+  },
+  {
+    "lat": 38.9949,
+    "lon": -76.8521,
+    "place": "Greenbelt, MD, USA",
+    "institutions": [
+      {
+        "name": "NASA Goddard",
+        "count": 2
+      }
+    ],
+    "count": 2
+  },
+  {
+    "lat": 44.974,
+    "lon": -93.2277,
+    "place": "Minneapolis, MN, USA",
     "institutions": [
       {
         "name": "University of Minnesota",
@@ -144,100 +140,36 @@
     "count": 2
   },
   {
-    "lat": 46.34,
-    "lon": -119.29,
-    "place": "Richland, WA, USA",
+    "lat": 40.4237,
+    "lon": -86.9212,
+    "place": "West Lafayette, IN, USA",
     "institutions": [
       {
-        "name": "Joint Global Change Research Institute, Pacific Northwest National Lab",
-        "count": 1
-      },
-      {
-        "name": "Pacific Northwets National Laboratory",
-        "count": 1
+        "name": "Purdue University",
+        "count": 2
       }
     ],
     "count": 2
   },
   {
-    "lat": 29.7207902,
-    "lon": -95.3440627,
-    "place": "University of Houston, 4800, Calhoun Road, University Oaks, Houston, Harris County, Texas, 77004, United States",
+    "lat": 42.686,
+    "lon": -73.8236,
+    "place": "Albany, NY, USA",
     "institutions": [
       {
-        "name": "University of Houston",
+        "name": "University at Albany",
         "count": 1
       }
     ],
     "count": 1
   },
   {
-    "lat": 30.2851494,
-    "lon": -97.7339352,
-    "place": "University of Texas at Austin, 1, Allandale, Austin, Travis County, Texas, 78712, United States",
+    "lat": 30.2849,
+    "lon": -97.7341,
+    "place": "Austin, TX, USA",
     "institutions": [
       {
-        "name": "UT - Austin",
-        "count": 1
-      }
-    ],
-    "count": 1
-  },
-  {
-    "lat": 35.1830867,
-    "lon": -111.654961,
-    "place": "Northern Arizona University, West University Drive, Flagstaff, Coconino County, Arizona, 86011, United States",
-    "institutions": [
-      {
-        "name": "Northern Arizona University",
-        "count": 1
-      }
-    ],
-    "count": 1
-  },
-  {
-    "lat": 37.4313138,
-    "lon": -122.1693654,
-    "place": "Stanford University, 450, Jane Stanford Way, Rains Houses, Santa Clara County, California, 94305, United States",
-    "institutions": [
-      {
-        "name": "Stanford University",
-        "count": 1
-      }
-    ],
-    "count": 1
-  },
-  {
-    "lat": 37.4669776,
-    "lon": 126.9491379,
-    "place": "서울대학교, 1, 관악로, 대학동, 관악구, 서울특별시, 08826, 대한민국",
-    "institutions": [
-      {
-        "name": "Seoul National University",
-        "count": 1
-      }
-    ],
-    "count": 1
-  },
-  {
-    "lat": 37.77,
-    "lon": -122.42,
-    "place": "San Francisco, CA, USA",
-    "institutions": [
-      {
-        "name": "Spark Climate Solutions",
-        "count": 1
-      }
-    ],
-    "count": 1
-  },
-  {
-    "lat": 37.8672582,
-    "lon": 127.7447487,
-    "place": "강원대학교, 공지로, 효자2동, 춘천시, 강원특별자치도, 24343, 대한민국",
-    "institutions": [
-      {
-        "name": "Kangwon National University",
+        "name": "University of Texas at Austin",
         "count": 1
       }
     ],
@@ -256,9 +188,9 @@
     "count": 1
   },
   {
-    "lat": 39.97789,
-    "lon": -105.2748664,
-    "place": "National Center for Atmospheric Research Mesa Lab, 1850, Table Mesa Drive, Boulder, Boulder County, Colorado, 80305, United States",
+    "lat": 39.978,
+    "lon": -105.275,
+    "place": "Boulder, CO, USA",
     "institutions": [
       {
         "name": "National Center for Atmospheric Research",
@@ -268,12 +200,72 @@
     "count": 1
   },
   {
-    "lat": 40.0075984,
-    "lon": -105.2691008,
-    "place": "University of Colorado, 1100, The Hill, Boulder, Boulder County, Colorado, United States",
+    "lat": 40.0076,
+    "lon": -105.2659,
+    "place": "Boulder, CO, USA",
     "institutions": [
       {
         "name": "University of Colorado",
+        "count": 1
+      }
+    ],
+    "count": 1
+  },
+  {
+    "lat": 42.377,
+    "lon": -71.1167,
+    "place": "Cambridge, MA, USA",
+    "institutions": [
+      {
+        "name": "Harvard University",
+        "count": 1
+      }
+    ],
+    "count": 1
+  },
+  {
+    "lat": 37.8693,
+    "lon": 127.7444,
+    "place": "Chuncheon, South Korea",
+    "institutions": [
+      {
+        "name": "Kangwon National University",
+        "count": 1
+      }
+    ],
+    "count": 1
+  },
+  {
+    "lat": 35.1894,
+    "lon": -111.6513,
+    "place": "Flagstaff, AZ, USA",
+    "institutions": [
+      {
+        "name": "Northern Arizona University",
+        "count": 1
+      }
+    ],
+    "count": 1
+  },
+  {
+    "lat": 29.7199,
+    "lon": -95.3422,
+    "place": "Houston, TX, USA",
+    "institutions": [
+      {
+        "name": "University of Houston",
+        "count": 1
+      }
+    ],
+    "count": 1
+  },
+  {
+    "lat": 45.5048,
+    "lon": -73.5772,
+    "place": "Montréal, QC, Canada",
+    "institutions": [
+      {
+        "name": "McGill University",
         "count": 1
       }
     ],
@@ -292,36 +284,36 @@
     "count": 1
   },
   {
-    "lat": 42.3657432,
-    "lon": -71.1222139,
-    "place": "Harvard University, Bay Street, Riverside, Cambridge, Middlesex County, Massachusetts, 02318, United States",
+    "lat": 37.77,
+    "lon": -122.42,
+    "place": "San Francisco, CA, USA",
     "institutions": [
       {
-        "name": "Harvard University",
+        "name": "Spark Climate Solutions",
         "count": 1
       }
     ],
     "count": 1
   },
   {
-    "lat": 42.6840271,
-    "lon": -73.8258773,
-    "place": "University at Albany, The State University of New York, The Rise Apartments - Pine Hills, City of Albany, Albany County, New York, 12203, United States",
+    "lat": 37.4599,
+    "lon": 126.9519,
+    "place": "Seoul, South Korea",
     "institutions": [
       {
-        "name": "University at Albany",
+        "name": "Seoul National University",
         "count": 1
       }
     ],
     "count": 1
   },
   {
-    "lat": 45.5068861,
-    "lon": -73.5787118,
-    "place": "McGill University, 845, Rue Sherbrooke Ouest, Ville-Marie, Montréal, Agglomération de Montréal, Montréal (région administrative), Québec, H3A 1G9, Canada",
+    "lat": 37.4275,
+    "lon": -122.1697,
+    "place": "Stanford, CA, USA",
     "institutions": [
       {
-        "name": "McGill University",
+        "name": "Stanford University",
         "count": 1
       }
     ],

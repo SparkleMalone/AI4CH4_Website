@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Member expertise — AI⁴Methane</title>
+  <meta name="description" content="Find AI⁴Methane members by methane system, method, and region: wetlands, eddy covariance, atmospheric inversion, machine learning, and more." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="expertise.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="index.html" class="logo">AI<sup>4</sup>Methane</a>
+      <nav>
+        <a href="index.html#about">About</a>
+        <a href="index.html#team">Team</a>
+        <a href="expertise.html" aria-current="page" style="color:var(--text)">Expertise</a>
+        <a href="index.html#workshops">Workshops</a>
+        <a href="index.html#outputs">Outputs</a>
+        <a href="https://cu-esiil.github.io/AI-for-Natural-Methane/" target="_blank" rel="noopener" class="nav-cta">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-main">
+    <section class="section" style="padding-top:1rem">
+      <div class="wrap">
+        <a href="index.html#expertise" class="page-back">← Back to AI⁴Methane</a>
+        <h1 class="section-title" style="margin-bottom:0.5rem">Find an expert</h1>
+        <p class="section-lead">Search the working group by methane system, method, application, region, or keyword. Members keep their own profiles up to date. Member? <a href="survey.html" style="color:var(--accent)">Add or update your expertise</a>.</p>
+
+        <div id="status" class="notice" hidden></div>
+
+        <div class="dir-layout" id="dir" hidden>
+          <aside class="dir-filters" id="filters" aria-label="Filters"></aside>
+          <div>
+            <div class="dir-toolbar">
+              <input type="search" id="q" placeholder="Search names, institutions, keywords, research summaries…" aria-label="Search members" />
+              <button type="button" class="btn btn-ghost filters-toggle" id="filters-toggle" aria-controls="filters" aria-expanded="false">Filters</button>
+            </div>
+            <div class="active-filters" id="active"></div>
+            <p class="dir-count" id="count" aria-live="polite"></p>
+            <div class="people" id="people"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>AI<sup>4</sup>Methane — a Collaborative Organization. <a href="https://cu-esiil.github.io/AI-for-Natural-Methane/" target="_blank" rel="noopener">Resources on GitHub</a></p>
+    </div>
+  </footer>
+
+  <script src="expertise-config.js"></script>
+  <script src="script.js"></script>
+  <script>
+  (function () {
+    var FACETS = ['methods', 'domains', 'applications', 'regions', 'scales', 'open_to'];
+        var SHOW_TOP = 8;
+    var esc = AI4M.esc;
+    var all = [];
+    var state = { q: '', filters: [] }; // filters: [{field, term}]
+    var expanded = {};
+
+    var statusEl = document.getElementById('status');
+    var qEl = document.getElementById('q');
+
+    function key(f) { return f.field + ':' + f.term; }
+    function has(field, term) { return state.filters.some(function (f) { return f.field === field && f.term === term; }); }
+
+    // ---- URL <-> state, so filtered views can be linked and shared ----
+    function readUrl() {
+      var sp = new URLSearchParams(location.search);
+      state.q = sp.get('q') || '';
+      state.filters = sp.getAll('f').map(function (s) {
+        var i = s.indexOf(':'); return i > 0 ? { field: s.slice(0, i), term: s.slice(i + 1) } : null;
+      }).filter(Boolean);
+      qEl.value = state.q;
+    }
+    function writeUrl() {
+      var sp = new URLSearchParams();
+      if (state.q) sp.set('q', state.q);
+      state.filters.forEach(function (f) { sp.append('f', key(f)); });
+      var s = sp.toString();
+      history.replaceState(null, '', location.pathname + (s ? '?' + s : '') + location.hash);
+    }
+
+    // ---- Matching ----
+    function haystack(p) {
+      if (!p._hay) {
+        p._hay = [p.name, p.affiliation, p.position, p.career_stage, p.bio]
+          .concat(p.domains || [], p.methods || [], p.applications || [], p.regions || [], p.scales || [], p.keywords || [], p.open_to || [])
+          .join(' \n ').toLowerCase();
+      }
+      return p._hay;
+    }
+    function matchesFilters(p, filters) {
+      return filters.every(function (f) {
+        var list = p[f.field] || [];
+        var t = f.term.toLowerCase();
+        return list.some(function (x) { return String(x).toLowerCase() === t; });
+      });
+    }
+    function matchesQuery(p) {
+      if (!state.q) return true;
+      var hay = haystack(p);
+      return state.q.toLowerCase().split(/\s+/).filter(Boolean).every(function (w) { return hay.indexOf(w) >= 0; });
+    }
+    function results() { return all.filter(function (p) { return matchesQuery(p) && matchesFilters(p, state.filters); }); }
+
+    // ---- Rendering ----
+    function renderFilters(current) {
+      var html = '';
+      FACETS.forEach(function (field) {
+        var t = AI4M.TAXONOMY[field];
+        // Every term that appears in any profile, with its count among the current results.
+        var overall = AI4M.tally(all, field);
+        if (!overall.length) return;
+        var now = {};
+        AI4M.tally(current, field).forEach(function (x) { now[x.term] = x.count; });
+        var items = overall.map(function (x) { return { term: x.term, n: now[x.term] || 0, total: x.count }; })
+          .sort(function (a, b) { return (has(field, b.term) - has(field, a.term)) || b.n - a.n || b.total - a.total || a.term.localeCompare(b.term); });
+        var limit = expanded[field] ? items.length : SHOW_TOP;
+        html += '<h3>' + esc(t.label) + '</h3><ul class="facet">';
+        items.slice(0, limit).forEach(function (x) {
+          var on = has(field, x.term);
+          html += '<li><label class="' + (x.n === 0 && !on ? 'is-zero' : '') + '"><span class="t"><input type="checkbox" data-field="' + field +
+            '" data-term="' + esc(x.term) + '"' + (on ? ' checked' : '') + ' />' + esc(x.term) + '</span><span class="n">' + x.n + '</span></label></li>';
+        });
+        html += '</ul>';
+        if (items.length > SHOW_TOP) {
+          html += '<button type="button" class="link-btn facet-more" data-more="' + field + '">' +
+            (expanded[field] ? 'Show fewer' : 'Show all ' + items.length) + '</button>';
+        }
+      });
+      document.getElementById('filters').innerHTML = html;
+    }
+
+    function renderActive() {
+      var html = state.filters.map(function (f, i) {
+        return '<button type="button" data-remove="' + i + '" aria-label="Remove filter ' + esc(f.term) + '">' + esc(f.term) + '</button>';
+      }).join('');
+      if (state.filters.length || state.q) html += '<button type="button" data-clear="1" style="background:none;border-color:var(--border);color:var(--text-muted)">Clear all</button>';
+      document.getElementById('active').innerHTML = html;
+    }
+
+    function tagButtons(p, field) {
+      return (p[field] || []).map(function (t) {
+        return '<button type="button" class="tag' + (has(field, t) ? ' is-match' : '') + '" data-field="' + field + '" data-term="' + esc(t) + '">' + esc(t) + '</button>';
+      }).join('');
+    }
+
+    function card(p) {
+      var meta = [p.position, p.affiliation].filter(Boolean).map(esc).join(' · ');
+      var tags = '';
+      [['domains', 'Systems'], ['methods', 'Methods'], ['applications', 'Applications'], ['regions', 'Regions'], ['keywords', 'Keywords']].forEach(function (pair) {
+        if ((p[pair[0]] || []).length) tags += '<div class="tags"><span class="tag-label">' + pair[1] + '</span>' + tagButtons(p, pair[0]) + '</div>';
+      });
+      var links = [];
+      if (p.email) links.push('<a href="mailto:' + esc(p.email) + '">Email</a>');
+      if (p.website && /^https?:\/\//i.test(p.website)) links.push('<a href="' + esc(p.website) + '" target="_blank" rel="noopener">Website</a>');
+      if (p.orcid) links.push('<a href="https://orcid.org/' + esc(p.orcid) + '" target="_blank" rel="noopener">ORCID</a>');
+      var open = (p.open_to || []).length ? '<p class="open" style="margin:0"><b>Open to:</b> ' + p.open_to.map(esc).join(', ') + '</p>' : '';
+      var bio = p.bio ? '<p class="bio clamped">' + esc(p.bio) + '</p>' : '';
+      return '<article class="person" id="' + esc(p.id) + '"><div><h3>' + esc(p.name) + '</h3><div class="meta">' + meta +
+        (p.career_stage ? '<br/>' + esc(p.career_stage) : '') + '</div></div>' + bio + tags + open +
+        (links.length ? '<div class="links">' + links.join('') + '</div>' : '') + '</article>';
+    }
+
+    function render() {
+      var res = results();
+      renderFilters(res);
+      renderActive();
+      var n = res.length;
+      document.getElementById('count').innerHTML = (state.q || state.filters.length)
+        ? '<strong>' + n + '</strong> of ' + all.length + ' members match'
+        : '<strong>' + all.length + '</strong> members have shared their expertise';
+      document.getElementById('people').innerHTML = n ? res.map(card).join('')
+        : '<p class="empty">No members match all of these filters. Try removing one, or search for a broader term.</p>';
+      // Expand long summaries on click.
+      document.querySelectorAll('.bio.clamped').forEach(function (b) {
+        if (b.scrollHeight <= b.clientHeight + 2) b.classList.remove('clamped');
+        else { b.style.cursor = 'pointer'; b.title = 'Show full summary'; }
+      });
+      writeUrl();
+    }
+
+    function toggle(field, term) {
+      var i = state.filters.findIndex(function (f) { return f.field === field && f.term === term; });
+      if (i >= 0) state.filters.splice(i, 1); else state.filters.push({ field: field, term: term });
+      render();
+    }
+
+    // ---- Events ----
+    document.getElementById('filters').addEventListener('change', function (e) {
+      var t = e.target; if (t.dataset.field) toggle(t.dataset.field, t.dataset.term);
+    });
+    document.getElementById('filters').addEventListener('click', function (e) {
+      var m = e.target.dataset && e.target.dataset.more; if (!m) return;
+      expanded[m] = !expanded[m]; render();
+    });
+    document.getElementById('people').addEventListener('click', function (e) {
+      var t = e.target;
+      if (t.classList.contains('tag')) { toggle(t.dataset.field, t.dataset.term); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+      else if (t.classList.contains('bio')) t.classList.toggle('clamped');
+    });
+    document.getElementById('active').addEventListener('click', function (e) {
+      var d = e.target.dataset || {};
+      if (d.clear) { state.filters = []; state.q = ''; qEl.value = ''; render(); }
+      else if (d.remove != null) { state.filters.splice(+d.remove, 1); render(); }
+    });
+    var timer;
+    qEl.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { state.q = qEl.value.trim(); render(); }, 150);
+    });
+    document.getElementById('filters-toggle').addEventListener('click', function () {
+      var f = document.getElementById('filters');
+      var open = f.classList.toggle('is-open');
+      this.setAttribute('aria-expanded', open);
+    });
+
+    // ---- Load ----
+    function fail(msg) { statusEl.hidden = false; statusEl.className = 'notice is-error'; statusEl.innerHTML = msg; }
+    if (!AI4M.configured()) {
+      fail('<strong>The directory isn\'t connected yet.</strong> The site administrator needs to add the Google Apps Script address to <code>expertise-config.js</code>.');
+      return;
+    }
+    statusEl.hidden = false; statusEl.textContent = 'Loading member expertise…';
+    readUrl();
+    AI4M.fetchProfiles().then(function (profiles) {
+      all = profiles;
+      statusEl.hidden = true;
+      document.getElementById('dir').hidden = false;
+      if (!all.length) {
+        document.getElementById('dir').hidden = true;
+        fail('<strong>No profiles yet.</strong> Be the first: <a href="survey.html" style="color:var(--accent)">share your expertise</a>.');
+        return;
+      }
+      render();
+      if (location.hash) {
+        var el = document.getElementById(location.hash.slice(1));
+        if (el) { el.scrollIntoView({ block: 'center' }); el.style.borderColor = 'var(--accent)'; el.style.boxShadow = '0 0 20px var(--accent-glow)'; }
+      }
+    }).catch(function () {
+      fail('<strong>Could not load the directory.</strong> Please refresh the page in a moment.');
+    });
+  })();
+  </script>
+</body>
+</html>

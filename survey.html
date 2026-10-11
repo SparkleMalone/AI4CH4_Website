@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expertise survey — AI⁴Methane</title>
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="expertise.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="index.html" class="logo">AI<sup>4</sup>Methane</a>
+      <nav>
+        <a href="index.html#about">About</a>
+        <a href="index.html#team">Team</a>
+        <a href="expertise.html">Expertise</a>
+        <a href="index.html#workshops">Workshops</a>
+        <a href="index.html#outputs">Outputs</a>
+        <a href="https://cu-esiil.github.io/AI-for-Natural-Methane/" target="_blank" rel="noopener" class="nav-cta">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-main">
+    <section class="section" style="padding-top:1rem">
+      <div class="wrap" style="max-width:52rem">
+        <a href="expertise.html" class="page-back">← Member expertise directory</a>
+        <h1 class="section-title" id="page-title">Share your expertise</h1>
+        <p class="section-lead" id="page-lead">For AI⁴Methane working-group members. Your answers appear in the public <a href="expertise.html" style="color:var(--accent)">expertise directory</a> so researchers can find the right people. It takes about five minutes, and you can update it any time.</p>
+
+        <div id="status" class="notice" role="status" aria-live="polite" hidden></div>
+
+        <form id="survey" novalidate>
+          <div class="form-card">
+            <h2>About you</h2>
+            <p class="hint">Fields marked <span class="req">*</span> are required.</p>
+            <div class="form-grid">
+              <div class="field">
+                <label for="name">Full name <span class="req">*</span></label>
+                <input type="text" id="name" name="name" list="member-names" autocomplete="name" required maxlength="120" />
+                <datalist id="member-names"></datalist>
+              </div>
+              <div class="field">
+                <label for="email">Email <span class="req">*</span></label>
+                <input type="email" id="email" name="email" autocomplete="email" required maxlength="200" />
+                <small>Used to send your private edit link. Hidden unless you choose to show it below.</small>
+              </div>
+              <div class="field">
+                <label for="affiliation">Affiliation <span class="req">*</span></label>
+                <input type="text" id="affiliation" name="affiliation" autocomplete="organization" required maxlength="200" />
+              </div>
+              <div class="field">
+                <label for="position">Position / title</label>
+                <input type="text" id="position" name="position" maxlength="120" placeholder="e.g. Research Scientist" />
+              </div>
+              <div class="field">
+                <label for="career_stage">Career stage</label>
+                <select id="career_stage" name="career_stage"><option value="">Select…</option></select>
+              </div>
+              <div class="field">
+                <label for="orcid">ORCID iD</label>
+                <input type="text" id="orcid" name="orcid" maxlength="40" placeholder="0000-0002-1825-0097" />
+              </div>
+              <div class="field wide">
+                <label for="website">Website or profile page</label>
+                <input type="url" id="website" name="website" maxlength="300" placeholder="https://" />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-card" id="taxonomy-cards"></div>
+
+          <div class="form-card">
+            <h2>In your own words</h2>
+            <div class="form-grid">
+              <div class="field wide">
+                <label for="keywords">Anything else? Additional expertise keywords</label>
+                <input type="text" id="keywords" name="keywords" maxlength="600" placeholder="e.g. ebullition, mangroves, FLUXNET-CH4, transformers, Bayesian calibration" />
+                <small>Separate with commas. Specific techniques, datasets, sites, tools, or topics that don't fit above. All become searchable tags.</small>
+              </div>
+              <div class="field wide">
+                <label for="bio">Short research summary</label>
+                <textarea id="bio" name="bio" maxlength="1200" placeholder="Two or three sentences on what you work on and what you could help others with."></textarea>
+                <small><span id="bio-count">0</span>/1200 characters</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <h2>Contact &amp; submit</h2>
+            <div class="form-grid">
+              <div class="field wide">
+                <label class="check-row"><input type="checkbox" id="show_email" name="show_email" /> Show my email address in the public directory so researchers can contact me directly.</label>
+              </div>
+              <div class="field">
+                <label for="password">Survey password <span class="req">*</span></label>
+                <input type="password" id="password" name="password" autocomplete="off" required />
+                <small>Shared with working-group members.</small>
+              </div>
+            </div>
+            <div class="form-actions" style="margin-top:1.25rem">
+              <button type="submit" class="btn btn-primary" id="submit-btn">Submit my expertise</button>
+              <button type="button" class="btn btn-danger" id="delete-btn" hidden>Delete my profile</button>
+            </div>
+          </div>
+        </form>
+
+        <div class="form-card" id="link-card">
+          <h2>Already submitted?</h2>
+          <p class="hint">Enter the email you used and we'll send you a private link to update or remove your profile.</p>
+          <form id="link-form" class="form-grid" novalidate>
+            <div class="field">
+              <label for="link-email">Email</label>
+              <input type="email" id="link-email" autocomplete="email" required />
+            </div>
+            <div class="field">
+              <label for="link-password">Survey password</label>
+              <input type="password" id="link-password" autocomplete="off" required />
+            </div>
+            <div class="form-actions field wide">
+              <button type="submit" class="btn btn-ghost" id="link-btn">Email me my edit link</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>AI<sup>4</sup>Methane — a Collaborative Organization. <a href="https://cu-esiil.github.io/AI-for-Natural-Methane/" target="_blank" rel="noopener">Resources on GitHub</a></p>
+    </div>
+  </footer>
+
+  <script src="expertise-config.js"></script>
+  <script src="script.js"></script>
+  <script>
+  (function () {
+    var form = document.getElementById('survey');
+    var statusEl = document.getElementById('status');
+    var submitBtn = document.getElementById('submit-btn');
+    var deleteBtn = document.getElementById('delete-btn');
+    var editToken = new URLSearchParams(location.search).get('edit');
+    var LIST_FIELDS = ['domains', 'methods', 'applications', 'scales', 'regions', 'open_to'];
+
+    function show(kind, html) {
+      statusEl.hidden = false;
+      statusEl.className = 'notice' + (kind ? ' is-' + kind : '');
+      statusEl.innerHTML = html;
+      statusEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // ---- Build the checkbox groups from the shared taxonomy ----
+    var cards = document.getElementById('taxonomy-cards');
+    var html = '<h2>Your expertise</h2><p class="hint">Choose all that apply, and add anything that isn\'t listed in the boxes under each section.</p>';
+    Object.keys(AI4M.TAXONOMY).forEach(function (field) {
+      var t = AI4M.TAXONOMY[field];
+      html += '<fieldset style="border:0;padding:0;margin:0 0 1.5rem"><legend class="field"><span class="label" style="font-size:1rem">' +
+        AI4M.esc(t.label) + '</span></legend>' + (t.help ? '<p class="hint" style="margin:0.1rem 0 0.75rem">' + AI4M.esc(t.help) + '</p>' : '');
+      t.groups.forEach(function (g) {
+        html += '<div class="chip-group">' + (g.name ? '<p class="chip-group-name">' + AI4M.esc(g.name) + '</p>' : '') + '<div class="chips">';
+        g.options.forEach(function (o) {
+          html += '<label class="chip"><input type="checkbox" name="' + field + '" value="' + AI4M.esc(o) + '" /><span>' + AI4M.esc(o) + '</span></label>';
+        });
+        html += '</div></div>';
+      });
+      if (t.allowOther) {
+        html += '<div class="field other-field"><label for="other-' + field + '">Add your own ' + AI4M.esc(t.label.toLowerCase()) + '</label>' +
+          '<input type="text" id="other-' + field + '" data-other="' + field + '" maxlength="400" placeholder="Separate with commas" /></div>';
+      }
+      html += '</fieldset>';
+    });
+    cards.innerHTML = html;
+
+    var stageSel = document.getElementById('career_stage');
+    AI4M.CAREER_STAGES.forEach(function (s) {
+      var o = document.createElement('option'); o.value = o.textContent = s; stageSel.appendChild(o);
+    });
+
+    var bio = document.getElementById('bio');
+    function bioCount() { document.getElementById('bio-count').textContent = bio.value.length; }
+    bio.addEventListener('input', bioCount);
+
+    // ---- Suggest names from the member list and fill in affiliation ----
+    var roster = {};
+    fetch('team_members.json').then(function (r) { return r.json(); }).then(function (list) {
+      var dl = document.getElementById('member-names');
+      list.forEach(function (m) {
+        roster[m.name.toLowerCase()] = m;
+        var o = document.createElement('option'); o.value = m.name; dl.appendChild(o);
+      });
+    }).catch(function () {});
+    document.getElementById('name').addEventListener('change', function () {
+      var m = roster[this.value.trim().toLowerCase()];
+      if (!m) return;
+      var aff = document.getElementById('affiliation'), pos = document.getElementById('position');
+      if (!aff.value) aff.value = m.affiliation || '';
+      if (!pos.value) pos.value = m.position || '';
+    });
+
+    // ---- Read / fill the form ----
+    function collect() {
+      var p = {};
+      ['name', 'email', 'affiliation', 'position', 'career_stage', 'orcid', 'website', 'bio'].forEach(function (k) {
+        p[k] = form.elements[k].value.trim();
+      });
+      LIST_FIELDS.forEach(function (f) {
+        p[f] = Array.prototype.map.call(form.querySelectorAll('input[name="' + f + '"]:checked'), function (i) { return i.value; });
+        var other = form.querySelector('[data-other="' + f + '"]');
+        if (other) p[f] = p[f].concat(splitList(other.value));
+      });
+      p.keywords = splitList(form.elements.keywords.value);
+      p.show_email = form.elements.show_email.checked;
+      return p;
+    }
+
+    function splitList(v) { return String(v || '').split(/[,;]/).map(function (s) { return s.trim(); }).filter(Boolean); }
+
+    function fill(p) {
+      ['name', 'email', 'affiliation', 'position', 'career_stage', 'orcid', 'website', 'bio'].forEach(function (k) {
+        if (p[k] != null) form.elements[k].value = p[k];
+      });
+      LIST_FIELDS.forEach(function (f) {
+        var chosen = p[f] || [];
+        var known = {};
+        form.querySelectorAll('input[name="' + f + '"]').forEach(function (i) {
+          i.checked = chosen.indexOf(i.value) >= 0; known[i.value] = 1;
+        });
+        // Terms that aren't checkbox options (the member's own, or options since removed)
+        // go back in that section's "Add your own" box, or into keywords if it has none.
+        var extra = chosen.filter(function (c) { return !known[c]; });
+        var other = form.querySelector('[data-other="' + f + '"]');
+        if (other) other.value = extra.join(', ');
+        else if (f !== 'open_to') p.keywords = (p.keywords || []).concat(extra);
+      });
+      form.elements.keywords.value = (p.keywords || []).join(', ');
+      form.elements.show_email.checked = !!p.show_email;
+      bioCount();
+    }
+
+    function validate(p) {
+      if (!p.name) return 'Please enter your name.';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email)) return 'Please enter a valid email address.';
+      if (!p.affiliation) return 'Please enter your affiliation.';
+      if (!p.domains.length && !p.methods.length && !p.applications.length && !p.keywords.length) return 'Please choose at least one area of expertise or add a keyword.';
+      if (p.orcid && !/\d{4}-\d{4}-\d{4}-\d{3}[\dXx]/.test(p.orcid)) return 'ORCID should look like 0000-0002-1825-0097.';
+      if (!form.elements.password.value) return 'Please enter the survey password.';
+      return '';
+    }
+
+    if (!AI4M.configured()) {
+      show('error', '<strong>The survey isn\'t connected yet.</strong> The site administrator needs to add the Google Apps Script address to <code>expertise-config.js</code>.');
+      submitBtn.disabled = true;
+    }
+
+    // ---- Edit mode: load the member's own profile ----
+    if (editToken && AI4M.configured()) {
+      document.getElementById('page-title').textContent = 'Update your expertise';
+      document.getElementById('page-lead').textContent = 'Change anything below and submit to update your profile in the directory.';
+      document.getElementById('link-card').hidden = true;
+      submitBtn.textContent = 'Save changes';
+      submitBtn.disabled = true;
+      show('', 'Loading your profile…');
+      AI4M.post({ action: 'get_own', token: editToken }).then(function (d) {
+        if (!d.ok) {
+          show('error', '<strong>' + AI4M.esc(d.error) + '</strong>');
+          document.getElementById('link-card').hidden = false;
+          editToken = null;
+          submitBtn.textContent = 'Submit my expertise';
+        } else {
+          fill(d.profile);
+          deleteBtn.hidden = false;
+          statusEl.hidden = true;
+        }
+        submitBtn.disabled = false;
+      }).catch(function () {
+        show('error', '<strong>Could not load your profile.</strong> Check your connection and reload the page.');
+        submitBtn.disabled = false;
+      });
+    }
+
+    // ---- Submit ----
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var p = collect();
+      var err = validate(p);
+      if (err) { show('error', '<strong>' + AI4M.esc(err) + '</strong>'); return; }
+      submitBtn.disabled = true;
+      var label = submitBtn.textContent;
+      submitBtn.textContent = 'Saving…';
+      AI4M.post({ action: 'submit', password: form.elements.password.value, token: editToken || undefined, profile: p })
+        .then(function (d) {
+          if (d.ok && d.mode === 'created') {
+            form.hidden = true;
+            document.getElementById('link-card').hidden = true;
+            show('ok', '<strong>Thank you! Your profile is live.</strong> We emailed a private link to <b>' + AI4M.esc(p.email) +
+              '</b> that you can use to update it whenever things change. <br/><br/><a class="btn btn-primary" href="expertise.html#' +
+              AI4M.esc(d.id) + '">See it in the directory</a>');
+          } else if (d.ok) {
+            show('ok', '<strong>Your changes are saved.</strong> <a href="expertise.html#' + AI4M.esc(d.id) + '" style="color:var(--accent)">View your profile in the directory</a>.');
+          } else {
+            show('error', '<strong>' + AI4M.esc(d.error || 'Could not save.') + '</strong>');
+          }
+        })
+        .catch(function () { show('error', '<strong>Could not reach the server.</strong> Please try again in a moment.'); })
+        .finally(function () { submitBtn.disabled = false; submitBtn.textContent = label; });
+    });
+
+    // ---- Delete ----
+    deleteBtn.addEventListener('click', function () {
+      if (!form.elements.password.value) { show('error', '<strong>Enter the survey password first, then press Delete again.</strong>'); return; }
+      if (deleteBtn.dataset.confirm !== '1') {
+        deleteBtn.dataset.confirm = '1';
+        deleteBtn.textContent = 'Press again to permanently delete';
+        return;
+      }
+      deleteBtn.disabled = true;
+      AI4M.post({ action: 'delete', token: editToken, password: form.elements.password.value }).then(function (d) {
+        if (d.ok) { form.hidden = true; show('ok', '<strong>Your profile has been removed from the directory.</strong>'); }
+        else show('error', '<strong>' + AI4M.esc(d.error) + '</strong>');
+      }).catch(function () { show('error', '<strong>Could not reach the server.</strong>'); })
+        .finally(function () { deleteBtn.disabled = false; });
+    });
+
+    // ---- Request edit link ----
+    document.getElementById('link-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = document.getElementById('link-email').value.trim();
+      var pw = document.getElementById('link-password').value;
+      if (!email || !pw) { show('error', '<strong>Enter your email and the survey password.</strong>'); return; }
+      var btn = document.getElementById('link-btn');
+      btn.disabled = true;
+      AI4M.post({ action: 'request_link', email: email, password: pw }).then(function (d) {
+        show(d.ok ? 'ok' : 'error', '<strong>' + AI4M.esc(d.ok ? d.message : d.error) + '</strong>');
+      }).catch(function () { show('error', '<strong>Could not reach the server.</strong>'); })
+        .finally(function () { btn.disabled = false; });
+    });
+  })();
+  </script>
+</body>
+</html>

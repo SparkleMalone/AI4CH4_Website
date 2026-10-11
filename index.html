@@ -17,6 +17,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="expertise.css" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -37,6 +38,7 @@
       <nav>
         <a href="#about">About</a>
         <a href="#team">Team</a>
+        <a href="#expertise">Expertise</a>
         <a href="#sectors">Sectors</a>
         <a href="#workshops">Workshops</a>
         <a href="#outputs">Outputs</a>
@@ -112,6 +114,32 @@
           <h2 class="section-title">Collaborative team</h2>
           <p class="map-stats"><span id="map-participant-count">—</span> participants · <span id="map-institution-count">—</span> institutions · <a href="team-members.html">View team table</a></p>
           <div id="participant-map" class="participant-map"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="expertise" class="section section-expertise">
+      <div class="wrap">
+        <h2 class="section-title reveal" data-delay="0">Our expertise</h2>
+        <p class="section-lead reveal" data-delay="1">Members span field measurements, remote sensing, process modeling, atmospheric inversion, and AI, with applications from nature-based solutions to policy. Every profile is written and kept current by the member.</p>
+        <p class="expertise-stats" id="expertise-stats" hidden></p>
+        <div class="expertise-summary" id="expertise-summary" hidden>
+          <div class="bar-card">
+            <h3>Methods &amp; skills</h3>
+            <ul class="bar-list" id="bars-methods"></ul>
+          </div>
+          <div class="bar-card">
+            <h3>Methane systems</h3>
+            <ul class="bar-list" id="bars-domains"></ul>
+          </div>
+          <div class="bar-card">
+            <h3>Applications &amp; impact</h3>
+            <ul class="bar-list" id="bars-applications"></ul>
+          </div>
+        </div>
+        <div class="expertise-cta reveal" data-delay="2">
+          <a href="expertise.html" class="btn btn-primary">Find an expert</a>
+          <a href="survey.html" class="btn btn-ghost">Members: add or update your expertise</a>
         </div>
       </div>
     </section>
@@ -218,7 +246,7 @@
       function initMap(points) {
         var mapEl = document.getElementById('participant-map');
         if (!mapEl || !window.L) return null;
-        var map = L.map('participant-map').setView([39.5, -98.5], 4);
+        var map = L.map('participant-map').setView([25, 0], 2);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
@@ -260,6 +288,39 @@
       } else {
         runMap();
       }
+    })();
+  </script>
+  <script src="expertise-config.js"></script>
+  <script>
+    (function () {
+      if (!window.AI4M || !AI4M.configured()) return;
+      var TOP = 8;
+      function bars(id, field, profiles) {
+        var rows = AI4M.tally(profiles, field).slice(0, TOP);
+        if (!rows.length) return false;
+        var max = rows[0].count;
+        document.getElementById(id).innerHTML = rows.map(function (r) {
+          var pct = Math.max(4, Math.round(100 * r.count / max));
+          var label = r.count + (r.count === 1 ? ' member' : ' members') + ': ' + r.term;
+          return '<li><a href="expertise.html?f=' + encodeURIComponent(field + ':' + r.term) + '" title="' + AI4M.esc(label) + '" aria-label="' + AI4M.esc(label) + '">' +
+            '<span class="bar-term">' + AI4M.esc(r.term) + '</span><span class="bar-n">' + r.count + '</span>' +
+            '<span class="bar-track" aria-hidden="true"><span class="bar-fill" style="width:' + pct + '%"></span></span></a></li>';
+        }).join('');
+        return true;
+      }
+      AI4M.fetchProfiles().then(function (profiles) {
+        if (!profiles.length) return;
+        var a = bars('bars-methods', 'methods', profiles);
+        var b = bars('bars-domains', 'domains', profiles);
+        var c = bars('bars-applications', 'applications', profiles);
+        document.getElementById('bars-applications').parentNode.hidden = !c;
+        if (a || b || c) document.getElementById('expertise-summary').hidden = false;
+        var inst = {};
+        profiles.forEach(function (p) { if (p.affiliation) inst[p.affiliation.toLowerCase()] = 1; });
+        var st = document.getElementById('expertise-stats');
+        st.innerHTML = '<strong>' + profiles.length + '</strong> member profiles · <strong>' + Object.keys(inst).length + '</strong> institutions';
+        st.hidden = false;
+      }).catch(function () { /* section still shows the buttons */ });
     })();
   </script>
   <script src="script.js"></script>
