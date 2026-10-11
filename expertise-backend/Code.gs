@@ -44,7 +44,7 @@ var MAX_ITEM_LEN = 80;
 function setup() {
   var props = PropertiesService.getScriptProperties();
   if (!props.getProperty('SURVEY_PASSWORD')) props.setProperty('SURVEY_PASSWORD', 'AI4Methane');
-  if (!props.getProperty('SITE_URL')) props.setProperty('SITE_URL', 'https://compy-dtn.pnl.gov/zhuq283/AI4Methane/');
+  if (!props.getProperty('SITE_URL')) props.setProperty('SITE_URL', 'https://ai4ch4.com/');
   if (!props.getProperty('ADMIN_EMAIL')) props.setProperty('ADMIN_EMAIL', Session.getEffectiveUser().getEmail());
   var sheet = getSheet_();
   Logger.log('Ready. Sheet: ' + sheet.getParent().getUrl());

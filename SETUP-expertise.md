@@ -18,7 +18,7 @@ Every submission updates the Sheet, and the website reads it live, so changes sh
 4. In the function dropdown at the top, choose **setup** and click **Run**. Google will ask you to authorize the script: it needs access to this spreadsheet and permission to send email as you. Approve it. If you see "Google hasn't verified this app", click **Advanced → Go to (project name)**. That warning is normal for your own scripts.
    `setup` creates a **Responses** tab and stores these settings under **Project Settings (gear icon) → Script properties**:
    - `SURVEY_PASSWORD` = `AI4Methane`. Change it here at any time.
-   - `SITE_URL` = `https://compy-dtn.pnl.gov/zhuq283/AI4Methane/`. This is used to build the edit links in emails. Change it if the site moves.
+   - `SITE_URL` = `https://ai4ch4.com/`. This is used to build the edit links in emails. Change it if the site moves.
    - `ADMIN_EMAIL` = your address. You get an email for each new profile. Delete the property to turn that off.
 
 ## 2. Deploy it as a web app
