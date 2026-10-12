@@ -139,6 +139,7 @@
               </div>
               <div class="form-actions" style="margin-top:1.25rem">
                 <button type="submit" class="btn btn-primary" id="submit-btn">Post opportunity</button>
+                <button type="button" class="btn btn-danger" id="delete-btn" hidden>Delete opportunity</button>
               </div>
             </form>
           </aside>
@@ -164,6 +165,8 @@
     var qEl = document.getElementById('q');
     var typeFilter = document.getElementById('type-filter');
     var submitBtn = document.getElementById('submit-btn');
+    var deleteBtn = document.getElementById('delete-btn');
+    var editToken = new URLSearchParams(location.search).get('edit');
     var all = [];
 
     function show(kind, html) {
@@ -208,6 +211,13 @@
         p[k] = form.elements[k].value.trim();
       });
       return p;
+    }
+
+    function fill(p) {
+      ['title', 'type', 'deadline', 'visible_until', 'url', 'description', 'contact_name', 'contact_email', 'affiliation'].forEach(function (k) {
+        if (p[k] != null && form.elements[k]) form.elements[k].value = p[k];
+      });
+      document.getElementById('description-count').textContent = form.elements.description.value.length;
     }
 
     function validate(p) {
@@ -299,6 +309,30 @@
       });
     }
 
+    function loadEditOpportunity() {
+      if (!editToken || !AI4M.configured()) return;
+      document.getElementById('post-heading').textContent = 'Edit opportunity';
+      submitBtn.textContent = 'Save changes';
+      submitBtn.disabled = true;
+      show('', 'Loading this opportunity…');
+      AI4M.post({ action: 'get_own_opportunity', token: editToken }).then(function (d) {
+        if (!d.ok) {
+          show('error', '<strong>' + escapeHtml(d.error || 'This edit link is no longer valid.') + '</strong>');
+          editToken = null;
+          document.getElementById('post-heading').textContent = 'Post an opportunity';
+          submitBtn.textContent = 'Post opportunity';
+          return;
+        }
+        fill(d.opportunity);
+        deleteBtn.hidden = false;
+        statusEl.hidden = true;
+      }).catch(function () {
+        show('error', '<strong>Could not load this opportunity.</strong> Check your connection and reload the page.');
+      }).finally(function () {
+        submitBtn.disabled = false;
+      });
+    }
+
     document.getElementById('visible_until').min = todayString();
     document.getElementById('deadline').min = todayString();
     document.getElementById('visible_until').value = addDays(60);
@@ -320,25 +354,53 @@
       if (err) { show('error', '<strong>' + escapeHtml(err) + '</strong>'); return; }
       submitBtn.disabled = true;
       var label = submitBtn.textContent;
-      submitBtn.textContent = 'Posting…';
-      AI4M.post({ action: 'submit_opportunity', password: form.elements.password.value, opportunity: p })
+      submitBtn.textContent = editToken ? 'Saving…' : 'Posting…';
+      AI4M.post({ action: 'submit_opportunity', password: form.elements.password.value, token: editToken || undefined, opportunity: p })
         .then(function (d) {
           if (!d.ok) {
             show('error', '<strong>' + escapeHtml(d.error || 'Could not post the opportunity.') + '</strong>');
             return;
           }
-          form.reset();
-          document.getElementById('visible_until').value = addDays(60);
-          document.getElementById('description-count').textContent = '0';
-          show('ok', '<strong>Opportunity posted.</strong> It will remain visible until the date you chose.');
+          if (editToken) {
+            show('ok', '<strong>Opportunity updated.</strong> <a href="opportunities.html#' + escapeHtml(d.id) + '" style="color:var(--accent)">View it in the list</a>.');
+          } else {
+            form.reset();
+            document.getElementById('visible_until').value = addDays(60);
+            document.getElementById('description-count').textContent = '0';
+            show('ok', '<strong>Opportunity posted.</strong> We emailed private edit/delete links to the contact email and site administrator.');
+            location.hash = d.id;
+          }
           load();
-          location.hash = d.id;
         })
         .catch(function () { show('error', '<strong>Could not reach the server.</strong> Please try again in a moment.'); })
         .finally(function () { submitBtn.disabled = false; submitBtn.textContent = label; });
     });
 
+    deleteBtn.addEventListener('click', function () {
+      if (!form.elements.password.value) { show('error', '<strong>Enter the member password first, then press Delete again.</strong>'); return; }
+      if (deleteBtn.dataset.confirm !== '1') {
+        deleteBtn.dataset.confirm = '1';
+        deleteBtn.textContent = 'Press again to permanently delete';
+        return;
+      }
+      deleteBtn.disabled = true;
+      AI4M.post({ action: 'delete_opportunity', token: editToken, password: form.elements.password.value }).then(function (d) {
+        if (d.ok) {
+          form.hidden = true;
+          show('ok', '<strong>This opportunity has been removed.</strong>');
+          load();
+        } else {
+          show('error', '<strong>' + escapeHtml(d.error || 'Could not delete this opportunity.') + '</strong>');
+        }
+      }).catch(function () {
+        show('error', '<strong>Could not reach the server.</strong>');
+      }).finally(function () {
+        deleteBtn.disabled = false;
+      });
+    });
+
     load();
+    loadEditOpportunity();
   })();
   </script>
 </body>

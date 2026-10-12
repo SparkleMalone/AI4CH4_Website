@@ -4,7 +4,11 @@
  * Stores member expertise profiles in a Google Sheet in your Drive and serves
  * them to the website:
  *   GET  ?action=list           -> public profiles (no private fields)
+ *   GET  ?action=list_opportunities -> public, unexpired opportunities
  *   POST {action:'submit', ...} -> create or update a profile (password required)
+ *   POST {action:'submit_opportunity', ...} -> create or update an opportunity
+ *   POST {action:'get_own_opportunity'} -> load an opportunity via private edit token
+ *   POST {action:'delete_opportunity'} -> remove an opportunity via private edit token
  *   POST {action:'get_own'}     -> load your own profile via your private edit token
  *   POST {action:'request_link'}-> email your private edit link to the address on file
  *   POST {action:'delete'}      -> remove your profile via your edit token
@@ -21,6 +25,7 @@ var CACHE_KEY = 'public_profiles_v1';
 var CACHE_SECONDS = 6 * 60 * 60; // cleared on every change anyway
 var OPPORTUNITY_SHEET_NAME = 'Opportunities';
 var OPPORTUNITY_CACHE_KEY = 'public_opportunities_v1';
+var OPPORTUNITY_ADMIN_EMAIL = 'sparklelmalone@gmail.edu';
 
 var COLUMNS = [
   'id', 'email', 'name', 'affiliation', 'position', 'career_stage',
@@ -36,7 +41,7 @@ var PUBLIC_FIELDS = [
 ];
 var OPPORTUNITY_COLUMNS = [
   'id', 'title', 'type', 'deadline', 'visible_until', 'url', 'description',
-  'contact_name', 'contact_email', 'affiliation', 'posted_at', 'updated_at'
+  'contact_name', 'contact_email', 'affiliation', 'edit_token', 'posted_at', 'updated_at'
 ];
 var OPPORTUNITY_PUBLIC_FIELDS = [
   'id', 'title', 'type', 'deadline', 'visible_until', 'url', 'description',
@@ -57,6 +62,7 @@ function setup() {
   if (!props.getProperty('SURVEY_PASSWORD')) props.setProperty('SURVEY_PASSWORD', 'AI4Methane');
   if (!props.getProperty('SITE_URL')) props.setProperty('SITE_URL', 'https://ai4ch4.com/');
   if (!props.getProperty('ADMIN_EMAIL')) props.setProperty('ADMIN_EMAIL', Session.getEffectiveUser().getEmail());
+  if (!props.getProperty('OPPORTUNITY_ADMIN_EMAIL')) props.setProperty('OPPORTUNITY_ADMIN_EMAIL', OPPORTUNITY_ADMIN_EMAIL);
   var sheet = getSheet_();
   var opportunitySheet = getOpportunitySheet_();
   Logger.log('Ready. Sheet: ' + sheet.getParent().getUrl());
@@ -89,8 +95,10 @@ function doPost(e) {
       case 'submit': return json_(submit_(body));
       case 'submit_opportunity': return json_(submitOpportunity_(body));
       case 'get_own': return json_(getOwn_(body));
+      case 'get_own_opportunity': return json_(getOwnOpportunity_(body));
       case 'request_link': return json_(requestLink_(body));
       case 'delete': return json_(deleteProfile_(body));
+      case 'delete_opportunity': return json_(deleteOpportunity_(body));
       default: return json_({ ok: false, error: 'Unknown action.' });
     }
   } catch (err) {
@@ -111,14 +119,28 @@ function submitOpportunity_(body) {
   try {
     var sheet = getOpportunitySheet_();
     cleanupExpiredOpportunities_(sheet);
+    var rows = readOpportunityRows_(sheet);
     var now = new Date().toISOString();
+
+    if (body.token) {
+      var idx = findIndex_(rows, 'edit_token', String(body.token));
+      if (idx < 0) return { ok: false, code: 'bad_token', error: 'This edit link is no longer valid.' };
+      var row = rows[idx];
+      for (var k in p) row[k] = p[k];
+      row.updated_at = now;
+      writeOpportunityRow_(sheet, idx, row);
+      clearOpportunitiesCache_();
+      return { ok: true, mode: 'updated', id: row.id };
+    }
+
     p.id = 'o' + Utilities.getUuid().slice(0, 8);
+    p.edit_token = Utilities.getUuid().replace(/-/g, '') + Utilities.getUuid().replace(/-/g, '');
     p.posted_at = now;
     p.updated_at = now;
     appendOpportunityRow_(sheet, p);
     clearOpportunitiesCache_();
-    notifyAdminOpportunity_(p);
-    return { ok: true, id: p.id };
+    sendOpportunityEditLinks_(p);
+    return { ok: true, mode: 'created', id: p.id };
   } finally {
     lock.releaseLock();
   }
@@ -186,6 +208,16 @@ function getOwn_(body) {
   return { ok: true, profile: out };
 }
 
+function getOwnOpportunity_(body) {
+  if (!body.token) return { ok: false, code: 'bad_token', error: 'Missing edit token.' };
+  var rows = readOpportunityRows_(getOpportunitySheet_());
+  var idx = findIndex_(rows, 'edit_token', String(body.token));
+  if (idx < 0) return { ok: false, code: 'bad_token', error: 'This edit link is no longer valid.' };
+  var r = rows[idx], out = {};
+  OPPORTUNITY_COLUMNS.forEach(function (c) { if (c !== 'edit_token') out[c] = r[c]; });
+  return { ok: true, opportunity: out };
+}
+
 function requestLink_(body) {
   if (!passwordOk_(body.password)) return { ok: false, code: 'bad_password', error: 'Incorrect survey password.' };
   var email = String(body.email || '').trim().toLowerCase();
@@ -207,6 +239,23 @@ function deleteProfile_(body) {
     if (idx < 0) return { ok: false, code: 'bad_token', error: 'This edit link is no longer valid.' };
     sheet.deleteRow(idx + 2);
     clearCache_();
+    return { ok: true };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function deleteOpportunity_(body) {
+  if (!passwordOk_(body.password)) return { ok: false, code: 'bad_password', error: 'Incorrect survey password.' };
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    var sheet = getOpportunitySheet_();
+    var rows = readOpportunityRows_(sheet);
+    var idx = findIndex_(rows, 'edit_token', String(body.token || ''));
+    if (idx < 0) return { ok: false, code: 'bad_token', error: 'This edit link is no longer valid.' };
+    sheet.deleteRow(idx + 2);
+    clearOpportunitiesCache_();
     return { ok: true };
   } finally {
     lock.releaseLock();
@@ -426,6 +475,11 @@ function appendOpportunityRow_(sheet, rec) {
   sheet.appendRow(toOpportunityCells_(rec, headerOf_(sheet)));
 }
 
+function writeOpportunityRow_(sheet, idx, rec) {
+  var header = headerOf_(sheet);
+  sheet.getRange(idx + 2, 1, 1, header.length).setValues([toOpportunityCells_(rec, header)]);
+}
+
 // ---------- Public feed ----------
 function publicProfiles_() {
   var cache = CacheService.getScriptCache();
@@ -512,6 +566,12 @@ function editUrl_(rec) {
   return site + 'survey.html?edit=' + encodeURIComponent(rec.edit_token);
 }
 
+function opportunityEditUrl_(rec) {
+  var site = PropertiesService.getScriptProperties().getProperty('SITE_URL') || '';
+  if (site && site.slice(-1) !== '/') site += '/';
+  return site + 'opportunities.html?edit=' + encodeURIComponent(rec.edit_token);
+}
+
 function sendEditLink_(rec, reason) {
   var url = editUrl_(rec);
   var intro = {
@@ -544,14 +604,36 @@ function notifyAdmin_(rec) {
 }
 
 function notifyAdminOpportunity_(rec) {
-  var admin = PropertiesService.getScriptProperties().getProperty('ADMIN_EMAIL');
+  sendOpportunityAdminEmail_(rec);
+}
+
+function sendOpportunityEditLinks_(rec) {
+  sendOpportunityPosterEmail_(rec);
+  sendOpportunityAdminEmail_(rec);
+}
+
+function sendOpportunityPosterEmail_(rec) {
+  var url = opportunityEditUrl_(rec);
+  var body =
+    'Hi ' + rec.contact_name + ',\n\n' +
+    'Thanks for sharing an AI⁴Methane opportunity. Your post is now live.\n\n' +
+    'Use this private link whenever you want to edit or delete the opportunity:\n' + url + '\n\n' +
+    'Keep this link to yourself: anyone who has it (and the member password) can edit or delete this opportunity.\n\n' +
+    '— AI⁴Methane';
+  MailApp.sendEmail({ to: rec.contact_email, subject: 'Your AI⁴Methane opportunity', body: body, name: 'AI⁴Methane' });
+}
+
+function sendOpportunityAdminEmail_(rec) {
+  var admin = PropertiesService.getScriptProperties().getProperty('OPPORTUNITY_ADMIN_EMAIL') || OPPORTUNITY_ADMIN_EMAIL;
   if (!admin) return;
+  var url = opportunityEditUrl_(rec);
   try {
     MailApp.sendEmail({
       to: admin,
       subject: 'New AI⁴Methane opportunity: ' + rec.title,
       body: rec.contact_name + ' (' + rec.affiliation + ', ' + rec.contact_email + ') posted an opportunity.\n\n' +
         rec.title + '\nVisible until: ' + rec.visible_until + '\nDeadline: ' + (rec.deadline || 'Not listed') +
+        '\n\nEdit/delete link:\n' + url +
         '\n\nResponses sheet: ' + SpreadsheetApp.openById(PropertiesService.getScriptProperties().getProperty('SHEET_ID')).getUrl(),
       name: 'AI⁴Methane'
     });

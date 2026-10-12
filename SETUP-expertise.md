@@ -21,6 +21,7 @@ Every submission updates the Sheet, and the website reads it live, so changes sh
    - `SURVEY_PASSWORD` = `AI4Methane`. Change it here at any time.
    - `SITE_URL` = `https://ai4ch4.com/`. This is used to build the edit links in emails. Change it if the site moves.
    - `ADMIN_EMAIL` = your address. You get an email for each new profile. Delete the property to turn that off.
+   - `OPPORTUNITY_ADMIN_EMAIL` = `sparklelmalone@gmail.edu`. This address receives the private edit/delete link for each new opportunity.
 
 ## 2. Deploy it as a web app
 
@@ -42,6 +43,7 @@ Every submission updates the Sheet, and the website reads it live, so changes sh
 - **Inviting members.** Send them the survey link (`…/survey.html`) and the password. Members who already submitted can use **"Email me my edit link"** at the bottom of the survey.
 - **Editing data yourself.** Edit the Responses or Opportunities sheet directly. List columns hold values separated by `; `. The website picks up your edits right away. Don't edit the `edit_token` column in Responses.
 - **Opportunity visibility.** The public opportunities page shows only rows whose `visible_until` date is today or later. The backend deletes expired opportunity rows when the list is requested or a new opportunity is submitted.
+- **Editing opportunities.** New opportunity submissions email a private edit/delete link to the poster and `OPPORTUNITY_ADMIN_EMAIL`. Editing or deleting also requires the member password.
 - **Removing someone.** Delete their row.
 - **Changing survey options.** Edit the lists in `expertise-config.js`. Members can also add their own terms in the "Add your own" box under each main category; those terms become searchable filters too. If you rename an option, old responses keep the old wording, and when those members next edit, the old term appears in that section's "Add your own" box.
 - **Adding a whole new category.** Add it to `AI4M.TAXONOMY` in `expertise-config.js`, add its name to `LIST_FIELDS` and `PUBLIC_FIELDS` in `Code.gs`, and redeploy (see below). The Sheet gets the new column automatically.
