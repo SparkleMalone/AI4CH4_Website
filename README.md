@@ -24,6 +24,7 @@ Then visit `http://localhost:8080` (or the port shown).
 - `team-members.html` — Full working-group table (name, affiliation), loaded from `team_members.json`
 - `survey.html`, `expertise.html`, `expertise.css`, `expertise-config.js` — Member expertise survey and searchable directory (also summarized on the home page)
 - `expertise-backend/Code.gs` — Google Apps Script that stores survey responses in a Google Sheet; see `SETUP-expertise.md`
+- `opportunities.html` — Member-posted funding/research opportunities; uses the same Apps Script endpoint and password, and removes expired posts automatically
 - `styles.css` — Dark theme, Cormorant Garamond + Outfit, teal accents
 - `script.js` — Header scroll state and scroll-in reveal animations
 - `awards.html` — Awards page (Impact Award, Futures Award); add winners by copying an award block

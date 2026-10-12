@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Opportunities — AI⁴Methane</title>
+  <meta name="description" content="Funding and research opportunities shared by AI⁴Methane members." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="expertise.css" />
+  <style>
+    .opps-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(20rem, 26rem); gap: 2rem; align-items: start; }
+    .opps-toolbar { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1.5rem 0 1rem; }
+    .opps-toolbar input { flex: 1 1 16rem; }
+    .opps-toolbar select { flex: 0 1 12rem; }
+    .opps-count { color: var(--text-muted); font-size: 0.9375rem; margin: 0 0 1rem; }
+    .opps-count strong { color: var(--accent); }
+    .opps-list { display: grid; gap: 1rem; }
+    .opp-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.35rem 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .opp-card:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
+    .opp-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.75rem 1rem; align-items: start; }
+    .opp-card h2 { font-family: var(--font-serif); font-size: 1.45rem; line-height: 1.2; margin: 0; }
+    .opp-type {
+      color: var(--bg); background: var(--accent); border-radius: 999px; padding: 0.18rem 0.65rem;
+      font-size: 0.75rem; font-weight: 600; white-space: nowrap;
+    }
+    .opp-desc { color: var(--text-muted); font-size: 0.9375rem; line-height: 1.6; margin: 0; white-space: pre-line; }
+    .opp-meta { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; color: var(--text-muted); font-size: 0.875rem; }
+    .opp-meta strong { color: var(--text); font-weight: 500; }
+    .opp-actions { display: flex; flex-wrap: wrap; gap: 0.9rem; font-size: 0.9375rem; }
+    .opp-actions a { color: var(--accent); text-decoration: none; }
+    .opp-actions a:hover { text-decoration: underline; }
+    .opps-submit { position: sticky; top: 5.5rem; }
+    .opps-empty { color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; }
+    @media (max-width: 900px) {
+      .opps-layout { grid-template-columns: 1fr; }
+      .opps-submit { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="index.html" class="logo">AI<sup>4</sup>Methane</a>
+      <nav>
+        <a href="index.html#about">About</a>
+        <a href="index.html#team">Team</a>
+        <a href="expertise.html">Expertise</a>
+        <a href="index.html#workshops">Workshops</a>
+        <a href="awards.html">Awards</a>
+        <a href="opportunities.html" aria-current="page" style="color:var(--text)">Opportunities</a>
+        <a href="https://cu-esiil.github.io/AI-for-Natural-Methane/" target="_blank" rel="noopener" class="nav-cta">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-main">
+    <section class="section" style="padding-top:1rem">
+      <div class="wrap">
+        <a href="index.html" class="page-back">← Back to AI⁴Methane</a>
+        <h1 class="section-title" style="margin-bottom:0.5rem">Funding &amp; research opportunities</h1>
+        <p class="section-lead">Share grants, jobs, fellowships, calls for collaboration, datasets, workshops, and other time-sensitive opportunities with the AI⁴Methane community.</p>
+
+        <div id="status" class="notice" role="status" aria-live="polite" hidden></div>
+
+        <div class="opps-layout">
+          <section aria-label="Current opportunities">
+            <div class="opps-toolbar">
+              <input type="search" id="q" placeholder="Search opportunities…" aria-label="Search opportunities" />
+              <select id="type-filter" aria-label="Filter by opportunity type">
+                <option value="">All types</option>
+              </select>
+            </div>
+            <p class="opps-count" id="count"></p>
+            <div class="opps-list" id="opportunities"></div>
+          </section>
+
+          <aside class="opps-submit form-card" aria-labelledby="post-heading">
+            <h2 id="post-heading">Post an opportunity</h2>
+            <p class="hint">Members can choose when a post disappears from the public list. Expired posts are removed automatically.</p>
+            <form id="opportunity-form" novalidate>
+              <div class="form-grid">
+                <div class="field wide">
+                  <label for="title">Title <span class="req">*</span></label>
+                  <input type="text" id="title" name="title" required maxlength="160" />
+                </div>
+                <div class="field">
+                  <label for="type">Type <span class="req">*</span></label>
+                  <select id="type" name="type" required>
+                    <option value="">Select…</option>
+                    <option>Funding</option>
+                    <option>Research collaboration</option>
+                    <option>Job / position</option>
+                    <option>Fellowship</option>
+                    <option>Workshop / event</option>
+                    <option>Dataset / resource</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="deadline">Deadline</label>
+                  <input type="date" id="deadline" name="deadline" />
+                </div>
+                <div class="field wide">
+                  <label for="visible_until">Show until <span class="req">*</span></label>
+                  <input type="date" id="visible_until" name="visible_until" required />
+                  <small>The opportunity is hidden after this date.</small>
+                </div>
+                <div class="field wide">
+                  <label for="url">Link</label>
+                  <input type="url" id="url" name="url" maxlength="500" placeholder="https://" />
+                </div>
+                <div class="field wide">
+                  <label for="description">Details <span class="req">*</span></label>
+                  <textarea id="description" name="description" required maxlength="1800" placeholder="Who it is for, what is needed, and any key dates."></textarea>
+                  <small><span id="description-count">0</span>/1800 characters</small>
+                </div>
+                <div class="field">
+                  <label for="contact_name">Contact name <span class="req">*</span></label>
+                  <input type="text" id="contact_name" name="contact_name" required maxlength="120" autocomplete="name" />
+                </div>
+                <div class="field">
+                  <label for="contact_email">Contact email <span class="req">*</span></label>
+                  <input type="email" id="contact_email" name="contact_email" required maxlength="200" autocomplete="email" />
+                </div>
+                <div class="field wide">
+                  <label for="affiliation">Affiliation</label>
+                  <input type="text" id="affiliation" name="affiliation" maxlength="200" autocomplete="organization" />
+                </div>
+                <div class="field wide">
+                  <label for="password">Member password <span class="req">*</span></label>
+                  <input type="password" id="password" name="password" required autocomplete="off" />
+                </div>
+              </div>
+              <div class="form-actions" style="margin-top:1.25rem">
+                <button type="submit" class="btn btn-primary" id="submit-btn">Post opportunity</button>
+              </div>
+            </form>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>AI<sup>4</sup>Methane — a Collaborative Organization. <a href="https://cu-esiil.github.io/AI-for-Natural-Methane/" target="_blank" rel="noopener">Resources on GitHub</a></p>
+    </div>
+  </footer>
+
+  <script src="expertise-config.js"></script>
+  <script src="script.js"></script>
+  <script>
+  (function () {
+    var form = document.getElementById('opportunity-form');
+    var statusEl = document.getElementById('status');
+    var listEl = document.getElementById('opportunities');
+    var countEl = document.getElementById('count');
+    var qEl = document.getElementById('q');
+    var typeFilter = document.getElementById('type-filter');
+    var submitBtn = document.getElementById('submit-btn');
+    var all = [];
+
+    function show(kind, html) {
+      statusEl.hidden = false;
+      statusEl.className = 'notice' + (kind ? ' is-' + kind : '');
+      statusEl.innerHTML = html;
+      statusEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function todayString() {
+      var d = new Date();
+      var y = d.getFullYear();
+      var m = String(d.getMonth() + 1).padStart(2, '0');
+      var day = String(d.getDate()).padStart(2, '0');
+      return y + '-' + m + '-' + day;
+    }
+
+    function addDays(days) {
+      var d = new Date();
+      d.setDate(d.getDate() + days);
+      var y = d.getFullYear();
+      var m = String(d.getMonth() + 1).padStart(2, '0');
+      var day = String(d.getDate()).padStart(2, '0');
+      return y + '-' + m + '-' + day;
+    }
+
+    function dateValue(s) {
+      return String(s || '').replace(/-/g, '');
+    }
+
+    function formatDate(s) {
+      if (!s) return '';
+      var parts = s.split('-');
+      if (parts.length !== 3) return s;
+      return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]))
+        .toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function collect() {
+      var p = {};
+      ['title', 'type', 'deadline', 'visible_until', 'url', 'description', 'contact_name', 'contact_email', 'affiliation'].forEach(function (k) {
+        p[k] = form.elements[k].value.trim();
+      });
+      return p;
+    }
+
+    function validate(p) {
+      if (!p.title) return 'Please enter a title.';
+      if (!p.type) return 'Please choose an opportunity type.';
+      if (!p.description) return 'Please add a few details.';
+      if (!p.contact_name) return 'Please enter a contact name.';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.contact_email)) return 'Please enter a valid contact email address.';
+      if (!p.visible_until) return 'Please choose how long the opportunity should remain visible.';
+      if (dateValue(p.visible_until) < dateValue(todayString())) return 'The visibility date cannot be in the past.';
+      if (p.deadline && dateValue(p.deadline) < dateValue(todayString())) return 'The deadline cannot be in the past.';
+      if (!form.elements.password.value) return 'Please enter the member password.';
+      return '';
+    }
+
+    function escapeHtml(s) {
+      return AI4M.esc(s == null ? '' : s);
+    }
+
+    function currentItems() {
+      var today = dateValue(todayString());
+      var q = qEl.value.trim().toLowerCase();
+      var type = typeFilter.value;
+      return all.filter(function (o) {
+        if (!o.visible_until || dateValue(o.visible_until) < today) return false;
+        if (type && o.type !== type) return false;
+        if (!q) return true;
+        return [o.title, o.type, o.description, o.contact_name, o.affiliation].join(' ').toLowerCase().indexOf(q) >= 0;
+      });
+    }
+
+    function renderTypes() {
+      var selected = typeFilter.value;
+      var types = {};
+      all.forEach(function (o) { if (o.type) types[o.type] = true; });
+      var html = '<option value="">All types</option>';
+      Object.keys(types).sort().forEach(function (t) {
+        html += '<option value="' + escapeHtml(t) + '"' + (t === selected ? ' selected' : '') + '>' + escapeHtml(t) + '</option>';
+      });
+      typeFilter.innerHTML = html;
+    }
+
+    function card(o) {
+      var meta = [];
+      if (o.deadline) meta.push('<span><strong>Deadline:</strong> ' + escapeHtml(formatDate(o.deadline)) + '</span>');
+      meta.push('<span><strong>Visible until:</strong> ' + escapeHtml(formatDate(o.visible_until)) + '</span>');
+      if (o.affiliation) meta.push('<span><strong>Affiliation:</strong> ' + escapeHtml(o.affiliation) + '</span>');
+      var links = [];
+      if (o.url) links.push('<a href="' + escapeHtml(o.url) + '" target="_blank" rel="noopener">Open link</a>');
+      if (o.contact_email) links.push('<a href="mailto:' + escapeHtml(o.contact_email) + '">Email ' + escapeHtml(o.contact_name || 'contact') + '</a>');
+      return '<article class="opp-card" id="' + escapeHtml(o.id) + '">' +
+        '<div class="opp-top"><h2>' + escapeHtml(o.title) + '</h2><span class="opp-type">' + escapeHtml(o.type) + '</span></div>' +
+        '<p class="opp-desc">' + escapeHtml(o.description) + '</p>' +
+        '<div class="opp-meta">' + meta.join('') + '</div>' +
+        (links.length ? '<div class="opp-actions">' + links.join('') + '</div>' : '') +
+        '</article>';
+    }
+
+    function render() {
+      renderTypes();
+      var items = currentItems();
+      countEl.innerHTML = '<strong>' + items.length + '</strong> current ' + (items.length === 1 ? 'opportunity' : 'opportunities');
+      listEl.innerHTML = items.length ? items.map(card).join('') :
+        '<div class="opps-empty">No current opportunities match this view.</div>';
+    }
+
+    function load() {
+      if (!AI4M.configured()) {
+        show('error', '<strong>The opportunities page is not connected yet.</strong> Add the Google Apps Script address to <code>expertise-config.js</code>.');
+        submitBtn.disabled = true;
+        return;
+      }
+      countEl.textContent = 'Loading opportunities…';
+      AI4M.fetchOpportunities().then(function (items) {
+        all = items || [];
+        render();
+        if (location.hash) {
+          setTimeout(function () {
+            var target = document.getElementById(location.hash.slice(1));
+            if (target) target.scrollIntoView({ block: 'center' });
+          }, 50);
+        }
+      }).catch(function (err) {
+        var msg = err && err.message === 'Unknown action.' ?
+          'The opportunities backend has not been redeployed yet.' :
+          'Could not load opportunities. Please try again in a moment.';
+        listEl.innerHTML = '<div class="opps-empty">' + escapeHtml(msg) + '</div>';
+        countEl.textContent = '';
+      });
+    }
+
+    document.getElementById('visible_until').min = todayString();
+    document.getElementById('deadline').min = todayString();
+    document.getElementById('visible_until').value = addDays(60);
+    document.getElementById('deadline').addEventListener('change', function () {
+      if (!form.elements.visible_until.value || dateValue(form.elements.visible_until.value) < dateValue(this.value)) {
+        form.elements.visible_until.value = this.value;
+      }
+    });
+    document.getElementById('description').addEventListener('input', function () {
+      document.getElementById('description-count').textContent = this.value.length;
+    });
+    qEl.addEventListener('input', render);
+    typeFilter.addEventListener('change', render);
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var p = collect();
+      var err = validate(p);
+      if (err) { show('error', '<strong>' + escapeHtml(err) + '</strong>'); return; }
+      submitBtn.disabled = true;
+      var label = submitBtn.textContent;
+      submitBtn.textContent = 'Posting…';
+      AI4M.post({ action: 'submit_opportunity', password: form.elements.password.value, opportunity: p })
+        .then(function (d) {
+          if (!d.ok) {
+            show('error', '<strong>' + escapeHtml(d.error || 'Could not post the opportunity.') + '</strong>');
+            return;
+          }
+          form.reset();
+          document.getElementById('visible_until').value = addDays(60);
+          document.getElementById('description-count').textContent = '0';
+          show('ok', '<strong>Opportunity posted.</strong> It will remain visible until the date you chose.');
+          load();
+          location.hash = d.id;
+        })
+        .catch(function () { show('error', '<strong>Could not reach the server.</strong> Please try again in a moment.'); })
+        .finally(function () { submitBtn.disabled = false; submitBtn.textContent = label; });
+    });
+
+    load();
+  })();
+  </script>
+</body>
+</html>

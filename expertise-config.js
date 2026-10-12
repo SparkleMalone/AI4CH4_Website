@@ -110,6 +110,13 @@ AI4M.fetchProfiles = function () {
     .then(function (d) { if (!d.ok) throw new Error(d.error || 'load failed'); return d.profiles || []; });
 };
 
+AI4M.fetchOpportunities = function () {
+  if (!AI4M.configured()) return Promise.reject(new Error('not-configured'));
+  return fetch(AI4M.ENDPOINT + '?action=list_opportunities', { cache: 'no-store' })
+    .then(function (r) { return r.json(); })
+    .then(function (d) { if (!d.ok) throw new Error(d.error || 'load failed'); return d.opportunities || []; });
+};
+
 // POST as text/plain so the browser sends it without a CORS preflight (Apps Script can't answer one).
 AI4M.post = function (payload) {
   if (!AI4M.configured()) return Promise.reject(new Error('not-configured'));

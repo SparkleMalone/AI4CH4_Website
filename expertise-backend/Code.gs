@@ -19,6 +19,8 @@
 var SHEET_NAME = 'Responses';
 var CACHE_KEY = 'public_profiles_v1';
 var CACHE_SECONDS = 6 * 60 * 60; // cleared on every change anyway
+var OPPORTUNITY_SHEET_NAME = 'Opportunities';
+var OPPORTUNITY_CACHE_KEY = 'public_opportunities_v1';
 
 var COLUMNS = [
   'id', 'email', 'name', 'affiliation', 'position', 'career_stage',
@@ -32,7 +34,16 @@ var PUBLIC_FIELDS = [
   'domains', 'methods', 'applications', 'scales', 'regions', 'keywords', 'bio',
   'website', 'orcid', 'open_to', 'updated_at'
 ];
+var OPPORTUNITY_COLUMNS = [
+  'id', 'title', 'type', 'deadline', 'visible_until', 'url', 'description',
+  'contact_name', 'contact_email', 'affiliation', 'posted_at', 'updated_at'
+];
+var OPPORTUNITY_PUBLIC_FIELDS = [
+  'id', 'title', 'type', 'deadline', 'visible_until', 'url', 'description',
+  'contact_name', 'contact_email', 'affiliation', 'posted_at', 'updated_at'
+];
 var MAX_LEN = { name: 120, affiliation: 200, position: 120, career_stage: 60, bio: 1200, website: 300, orcid: 40, email: 200 };
+var OPPORTUNITY_MAX_LEN = { title: 160, type: 80, url: 500, description: 1800, contact_name: 120, contact_email: 200, affiliation: 200 };
 var MAX_LIST_ITEMS = 40;
 var MAX_ITEM_LEN = 80;
 
@@ -47,16 +58,22 @@ function setup() {
   if (!props.getProperty('SITE_URL')) props.setProperty('SITE_URL', 'https://ai4ch4.com/');
   if (!props.getProperty('ADMIN_EMAIL')) props.setProperty('ADMIN_EMAIL', Session.getEffectiveUser().getEmail());
   var sheet = getSheet_();
+  var opportunitySheet = getOpportunitySheet_();
   Logger.log('Ready. Sheet: ' + sheet.getParent().getUrl());
+  Logger.log('Opportunities sheet ready: ' + opportunitySheet.getParent().getUrl());
 }
 
 /** Runs automatically when you edit the Responses sheet by hand, so the website shows the change right away. */
-function onEdit() { clearCache_(); }
+function onEdit() {
+  clearCache_();
+  clearOpportunitiesCache_();
+}
 
 // ---------- HTTP entry points ----------
 function doGet(e) {
   var action = (e && e.parameter && e.parameter.action) || 'list';
   if (action === 'list') return json_({ ok: true, profiles: publicProfiles_(), generated_at: new Date().toISOString() });
+  if (action === 'list_opportunities') return json_({ ok: true, opportunities: publicOpportunities_(), generated_at: new Date().toISOString() });
   return json_({ ok: false, error: 'Unknown action.' });
 }
 
@@ -70,6 +87,7 @@ function doPost(e) {
   try {
     switch (body.action) {
       case 'submit': return json_(submit_(body));
+      case 'submit_opportunity': return json_(submitOpportunity_(body));
       case 'get_own': return json_(getOwn_(body));
       case 'request_link': return json_(requestLink_(body));
       case 'delete': return json_(deleteProfile_(body));
@@ -78,6 +96,31 @@ function doPost(e) {
   } catch (err) {
     console.error(err);
     return json_({ ok: false, error: 'Something went wrong on the server. Please try again in a minute.' });
+  }
+}
+
+function submitOpportunity_(body) {
+  if (!passwordOk_(body.password)) return { ok: false, code: 'bad_password', error: 'Incorrect survey password.' };
+
+  var clean = cleanOpportunity_(body.opportunity || {});
+  if (clean.error) return { ok: false, code: 'invalid', error: clean.error };
+  var p = clean.opportunity;
+
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    var sheet = getOpportunitySheet_();
+    cleanupExpiredOpportunities_(sheet);
+    var now = new Date().toISOString();
+    p.id = 'o' + Utilities.getUuid().slice(0, 8);
+    p.posted_at = now;
+    p.updated_at = now;
+    appendOpportunityRow_(sheet, p);
+    clearOpportunitiesCache_();
+    notifyAdminOpportunity_(p);
+    return { ok: true, id: p.id };
+  } finally {
+    lock.releaseLock();
   }
 }
 
@@ -215,6 +258,39 @@ function cleanProfile_(raw) {
   return { profile: p };
 }
 
+function cleanOpportunity_(raw) {
+  var p = {};
+  function str(name, required) {
+    var v = String(raw[name] == null ? '' : raw[name]).replace(/\s+/g, ' ').trim();
+    if (name === 'description') v = String(raw[name] || '').trim();
+    if (v.length > (OPPORTUNITY_MAX_LEN[name] || 200)) v = v.slice(0, OPPORTUNITY_MAX_LEN[name] || 200);
+    if (required && !v) throw new Error(name);
+    p[name] = v;
+  }
+  try {
+    str('title', true); str('type', true); str('url'); str('description', true);
+    str('contact_name', true); str('contact_email', true); str('affiliation');
+  } catch (missing) {
+    return { error: 'Please fill in ' + missing.message.replace(/_/g, ' ') + '.' };
+  }
+  p.contact_email = p.contact_email.toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.contact_email)) return { error: 'Please enter a valid contact email address.' };
+  if (p.url && !/^https?:\/\//i.test(p.url)) {
+    p.url = /^[a-z][a-z0-9+.-]*:/i.test(p.url) ? '' : 'https://' + p.url;
+  }
+  p.deadline = cleanDate_(raw.deadline || '');
+  p.visible_until = cleanDate_(raw.visible_until || '');
+  if (!p.visible_until) return { error: 'Please choose how long the opportunity should remain visible.' };
+  if (dateValue_(p.visible_until) < dateValue_(today_())) return { error: 'The visibility date cannot be in the past.' };
+  if (p.deadline && dateValue_(p.deadline) < dateValue_(today_())) return { error: 'The deadline cannot be in the past.' };
+  return { opportunity: p };
+}
+
+function cleanDate_(value) {
+  var v = String(value || '').trim();
+  return /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : '';
+}
+
 function passwordOk_(given) {
   var expected = PropertiesService.getScriptProperties().getProperty('SURVEY_PASSWORD') || 'AI4Methane';
   var ok = String(given || '') === expected;
@@ -245,6 +321,27 @@ function getSheet_() {
     // A category added to the code after the sheet was created gets a new column at the end.
     var header = headerOf_(sheet);
     var missing = COLUMNS.filter(function (c) { return header.indexOf(c) < 0; });
+    if (missing.length) {
+      var start = header.length + 1;
+      sheet.getRange(1, start, 1, missing.length).setValues([missing]).setFontWeight('bold');
+      sheet.getRange(1, start, sheet.getMaxRows(), missing.length).setNumberFormat('@');
+    }
+  }
+  return sheet;
+}
+
+function getOpportunitySheet_() {
+  var ss = getSheet_().getParent();
+  var sheet = ss.getSheetByName(OPPORTUNITY_SHEET_NAME);
+  if (!sheet) sheet = ss.insertSheet(OPPORTUNITY_SHEET_NAME);
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(OPPORTUNITY_COLUMNS);
+    sheet.setFrozenRows(1);
+    sheet.getRange(1, 1, sheet.getMaxRows(), OPPORTUNITY_COLUMNS.length).setNumberFormat('@');
+    sheet.getRange(1, 1, 1, OPPORTUNITY_COLUMNS.length).setFontWeight('bold');
+  } else {
+    var header = headerOf_(sheet);
+    var missing = OPPORTUNITY_COLUMNS.filter(function (c) { return header.indexOf(c) < 0; });
     if (missing.length) {
       var start = header.length + 1;
       sheet.getRange(1, start, 1, missing.length).setValues([missing]).setFontWeight('bold');
@@ -300,6 +397,35 @@ function findIndex_(rows, field, value) {
   return -1;
 }
 
+function readOpportunityRows_(sheet) {
+  var last = sheet.getLastRow();
+  if (last < 2) return [];
+  var header = headerOf_(sheet);
+  var values = sheet.getRange(2, 1, last - 1, header.length).getValues();
+  return values.map(function (v) {
+    var o = {};
+    header.forEach(function (h, i) { o[h] = normalizeCell_(v[i]); });
+    return o;
+  });
+}
+
+function normalizeCell_(value) {
+  if (value instanceof Date) return Utilities.formatDate(value, timezone_(), 'yyyy-MM-dd');
+  return String(value == null ? '' : value);
+}
+
+function toOpportunityCells_(rec, header) {
+  return header.map(function (c) {
+    var v = rec[c] == null ? '' : String(rec[c]);
+    if (/^[=+\-@]/.test(v)) v = "'" + v;
+    return v;
+  });
+}
+
+function appendOpportunityRow_(sheet, rec) {
+  sheet.appendRow(toOpportunityCells_(rec, headerOf_(sheet)));
+}
+
 // ---------- Public feed ----------
 function publicProfiles_() {
   var cache = CacheService.getScriptCache();
@@ -319,7 +445,65 @@ function publicProfiles_() {
 }
 
 function clearCache_() { CacheService.getScriptCache().remove(CACHE_KEY); }
+function opportunityCacheKey_() { return OPPORTUNITY_CACHE_KEY + '_' + today_(); }
+function clearOpportunitiesCache_() { CacheService.getScriptCache().remove(opportunityCacheKey_()); }
 function lastName_(n) { var parts = String(n || '').trim().split(/\s+/); return parts[parts.length - 1] || ''; }
+
+function publicOpportunities_() {
+  var sheet = getOpportunitySheet_();
+  if (cleanupExpiredOpportunities_(sheet)) clearOpportunitiesCache_();
+  var cache = CacheService.getScriptCache();
+  var today = today_();
+  var cacheKey = opportunityCacheKey_();
+  var hit = cache.get(cacheKey);
+  if (hit) return JSON.parse(hit);
+  var out = readOpportunityRows_(sheet).filter(function (r) {
+    return r.visible_until && dateValue_(r.visible_until) >= dateValue_(today);
+  }).map(function (r) {
+    var o = {};
+    OPPORTUNITY_PUBLIC_FIELDS.forEach(function (f) { o[f] = r[f] || ''; });
+    return o;
+  });
+  out.sort(function (a, b) {
+    var ad = a.deadline || a.visible_until;
+    var bd = b.deadline || b.visible_until;
+    return dateValue_(ad) - dateValue_(bd) || String(b.posted_at).localeCompare(String(a.posted_at));
+  });
+  try { cache.put(cacheKey, JSON.stringify(out), 10 * 60); } catch (e) { /* too large to cache; fine */ }
+  return out;
+}
+
+function cleanupExpiredOpportunities_(sheet) {
+  sheet = sheet || getOpportunitySheet_();
+  var header = headerOf_(sheet);
+  var visibleCol = header.indexOf('visible_until');
+  if (visibleCol < 0 || sheet.getLastRow() < 2) return false;
+  var todayValue = dateValue_(today_());
+  var values = sheet.getRange(2, visibleCol + 1, sheet.getLastRow() - 1, 1).getValues();
+  var removed = false;
+  for (var i = values.length - 1; i >= 0; i--) {
+    var visibleUntil = normalizeCell_(values[i][0]);
+    if (visibleUntil && dateValue_(visibleUntil) < todayValue) {
+      sheet.deleteRow(i + 2);
+      removed = true;
+    }
+  }
+  return removed;
+}
+
+function timezone_() {
+  return Session.getScriptTimeZone() || 'America/New_York';
+}
+
+function today_() {
+  return Utilities.formatDate(new Date(), timezone_(), 'yyyy-MM-dd');
+}
+
+function dateValue_(s) {
+  var m = String(s || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return 0;
+  return Number(m[1] + m[2] + m[3]);
+}
 
 // ---------- Email ----------
 function editUrl_(rec) {
@@ -354,6 +538,21 @@ function notifyAdmin_(rec) {
       subject: 'New AI⁴Methane expertise profile: ' + rec.name,
       body: rec.name + ' (' + rec.affiliation + ', ' + rec.email + ') added a profile.\n\nResponses sheet: ' +
         SpreadsheetApp.openById(PropertiesService.getScriptProperties().getProperty('SHEET_ID')).getUrl(),
+      name: 'AI⁴Methane'
+    });
+  } catch (e) { /* notification is optional */ }
+}
+
+function notifyAdminOpportunity_(rec) {
+  var admin = PropertiesService.getScriptProperties().getProperty('ADMIN_EMAIL');
+  if (!admin) return;
+  try {
+    MailApp.sendEmail({
+      to: admin,
+      subject: 'New AI⁴Methane opportunity: ' + rec.title,
+      body: rec.contact_name + ' (' + rec.affiliation + ', ' + rec.contact_email + ') posted an opportunity.\n\n' +
+        rec.title + '\nVisible until: ' + rec.visible_until + '\nDeadline: ' + (rec.deadline || 'Not listed') +
+        '\n\nResponses sheet: ' + SpreadsheetApp.openById(PropertiesService.getScriptProperties().getProperty('SHEET_ID')).getUrl(),
       name: 'AI⁴Methane'
     });
   } catch (e) { /* notification is optional */ }
